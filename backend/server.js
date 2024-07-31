@@ -19,6 +19,7 @@ console.log(`Environment: ${env}`);
 console.log(`Database Host: ${process.env.DATABASE_HOST}`);
 console.log(`Database User: ${process.env.DATABASE_USER}`);
 console.log(`Database Name: ${process.env.DATABASE_NAME}`);
+console.log(`CORS Origin: ${process.env.CORS_ORIGIN}`);
 
 const app = express();
 const port = process.env.PORT || 3001;
