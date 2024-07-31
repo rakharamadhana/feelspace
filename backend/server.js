@@ -4,18 +4,29 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const dotenv = require('dotenv');
+const path = require('path');
+
+// Load environment variables
+const env = process.env.NODE_ENV || 'development';
+
+if (env === 'production') {
+    dotenv.config({ path: path.resolve(__dirname, '.env.production') });
+} else {
+    dotenv.config({ path: path.resolve(__dirname, '.env') });
+}
 
 const app = express();
-const port = 3001;
+const port = process.env.PORT || 3001;
 
 app.use(cors());
 app.use(bodyParser.json());
 
 const db = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: '',
-    database: 'sel-new'
+    host: process.env.DATABASE_URL.split('@')[1].split(':')[0],
+    user: process.env.DATABASE_URL.split('//')[1].split(':')[0],
+    password: process.env.DATABASE_URL.split(':')[2].split('@')[0],
+    database: process.env.DATABASE_URL.split('/')[3]
 });
 
 db.connect(err => {
@@ -28,12 +39,12 @@ db.connect(err => {
 
 // Middleware to verify token and extract user role
 const verifyToken = (req, res, next) => {
-    const token = req.headers['authorization'].split(' ')[1];
+    const token = req.headers['authorization']?.split(' ')[1];
     if (!token) {
         return res.status(401).send('Unauthorized');
     }
     try {
-        const decoded = jwt.verify(token, 'secretkey');
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
         req.user = decoded;
         next();
     } catch (err) {
@@ -58,7 +69,7 @@ app.post('/login', (req, res) => {
         if (results.length > 0) {
             const user = results[0];
             if (bcrypt.compareSync(password, user.password)) {
-                const token = jwt.sign({ id: user.id, role: user.role_name }, 'secretkey', { expiresIn: '1h' });
+                const token = jwt.sign({ id: user.id, role: user.role_name }, process.env.JWT_SECRET, { expiresIn: '1h' });
                 res.json({ token, role: user.role_name, name: user.name, email: user.email });
             } else {
                 res.status(401).send('Invalid password');
