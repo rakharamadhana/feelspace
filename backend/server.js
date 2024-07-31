@@ -23,8 +23,15 @@ console.log(`Database Name: ${process.env.DATABASE_NAME}`);
 const app = express();
 const port = process.env.PORT || 3001;
 
-// Configure CORS
-app.use(cors());
+// Configure CORS based on environment variable
+const corsOptions = {
+    origin: process.env.CORS_ORIGIN, // Use the CORS_ORIGIN environment variable
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true
+};
+
+app.use(cors(corsOptions));
+
 app.use(bodyParser.json());
 
 const db = mysql.createConnection({
