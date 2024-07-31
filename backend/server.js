@@ -17,16 +17,13 @@ if (env === 'production') {
 }
 
 const app = express();
-const port = process.env.PORT || 3001;
+const port = 3001;
 
 app.use(cors());
 app.use(bodyParser.json());
 
 const db = mysql.createConnection({
-    host: process.env.DATABASE_URL.split('@')[1].split(':')[0],
-    user: process.env.DATABASE_URL.split('//')[1].split(':')[0],
-    password: process.env.DATABASE_URL.split(':')[2].split('@')[0],
-    database: process.env.DATABASE_URL.split('/')[3]
+    connectionString: process.env.DATABASE_URL
 });
 
 db.connect(err => {
@@ -39,7 +36,7 @@ db.connect(err => {
 
 // Middleware to verify token and extract user role
 const verifyToken = (req, res, next) => {
-    const token = req.headers['authorization']?.split(' ')[1];
+    const token = req.headers['authorization'].split(' ')[1];
     if (!token) {
         return res.status(401).send('Unauthorized');
     }
