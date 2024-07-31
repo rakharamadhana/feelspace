@@ -7,6 +7,9 @@ const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
 const path = require('path');
 
+// Allow requests from your frontend domain
+const allowedOrigins = ['http://localhost:3000', 'http://feelspace.ddns.net'];
+
 // Load environment variables
 const env = process.env.NODE_ENV || 'development';
 
@@ -48,6 +51,18 @@ const verifyToken = (req, res, next) => {
         res.status(401).send('Unauthorized');
     }
 };
+
+app.use(cors({
+    origin: function (origin, callback) {
+        if (!origin) return callback(null, true);
+        if (allowedOrigins.indexOf(origin) === -1) {
+            const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+            return callback(new Error(msg), false);
+        }
+        return callback(null, true);
+    },
+    credentials: true
+}));
 
 app.post('/login', (req, res) => {
     const { email, password } = req.body;

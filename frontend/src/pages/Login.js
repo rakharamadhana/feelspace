@@ -47,13 +47,9 @@ const Login = () => {
                 <div className="flex-1 flex flex-col justify-center items-center text-center p-8">
                     <h1 className="text-9xl font-bold text-orange-600 mb-4">玩轉情緒學習平台</h1>
                     <h2 className="text-7xl font-semibold text-gray-800">FeelSpace Navigator</h2>
-                    <div className="absolute flex justify-end items-center overflow-hidden">
-                        <img src={`${process.env.PUBLIC_URL}/assets/login-bg.png`} alt="FeelSpace Navigator"
-                             className="transform translate-y-20"/>
-                    </div>
                 </div>
                 <div className="flex-1 flex justify-center items-center p-10">
-                    <div className="bg-white py-60 px-10 rounded-lg shadow-lg w-full max-w-2xl border-8 border-orange-500">
+                    <div className="bg-white p-10 rounded-lg shadow-lg w-full max-w-4xl">
                         <h1 className="text-3xl font-bold mb-8 text-gray-800">歡迎！登入你的帳號</h1>
                         {error && <p className="text-red-500 mb-4">{error}</p>}
                         <input
