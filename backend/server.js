@@ -4,29 +4,34 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const dotenv = require('dotenv');
 const path = require('path');
+const dotenv = require('dotenv');
 
-// Allow requests from your frontend domain
-const allowedOrigins = ['http://localhost:3000', 'http://feelspace.ddns.net'];
+// Define a new base route for the API
+const apiRouter = express.Router();
 
-// Load environment variables
+// Load environment variables from .env file
+dotenv.config();
+
+// Log the environment and database details for debugging
 const env = process.env.NODE_ENV || 'development';
-
-if (env === 'production') {
-    dotenv.config({ path: path.resolve(__dirname, '.env.production') });
-} else {
-    dotenv.config({ path: path.resolve(__dirname, '.env') });
-}
+console.log(`Environment: ${env}`);
+console.log(`Database Host: ${process.env.DATABASE_HOST}`);
+console.log(`Database User: ${process.env.DATABASE_USER}`);
+console.log(`Database Name: ${process.env.DATABASE_NAME}`);
 
 const app = express();
-const port = 3001;
+const port = process.env.PORT || 3001;
 
+// Configure CORS
 app.use(cors());
 app.use(bodyParser.json());
 
 const db = mysql.createConnection({
-    connectionString: process.env.DATABASE_URL
+    host: process.env.DATABASE_HOST,
+    user: process.env.DATABASE_USER,
+    password: process.env.DATABASE_PASSWORD,
+    database: process.env.DATABASE_NAME
 });
 
 db.connect(err => {
@@ -39,7 +44,11 @@ db.connect(err => {
 
 // Middleware to verify token and extract user role
 const verifyToken = (req, res, next) => {
-    const token = req.headers['authorization'].split(' ')[1];
+    const authHeader = req.headers['authorization'];
+    if (!authHeader) {
+        return res.status(401).send('Unauthorized');
+    }
+    const token = authHeader.split(' ')[1];
     if (!token) {
         return res.status(401).send('Unauthorized');
     }
@@ -52,24 +61,13 @@ const verifyToken = (req, res, next) => {
     }
 };
 
-app.use(cors({
-    origin: function (origin, callback) {
-        if (!origin) return callback(null, true);
-        if (allowedOrigins.indexOf(origin) === -1) {
-            const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
-            return callback(new Error(msg), false);
-        }
-        return callback(null, true);
-    },
-    credentials: true
-}));
-
-app.post('/login', (req, res) => {
+apiRouter.post('/login', (req, res) => {
+    console.log('Login request received:', req.body);
     const { email, password } = req.body;
     const query = `
-        SELECT users.*, roles.role_name 
-        FROM users 
-        JOIN roles ON users.role_id = roles.id 
+        SELECT users.*, roles.role_name
+        FROM users
+        JOIN roles ON users.role_id = roles.id
         WHERE email = ?
     `;
 
@@ -92,7 +90,7 @@ app.post('/login', (req, res) => {
     });
 });
 
-app.post('/register', verifyToken, (req, res) => {
+apiRouter.post('/register', (req, res) => {
     const { email, password, role, name } = req.body;
     const hashedPassword = bcrypt.hashSync(password, 10);
 
@@ -118,7 +116,7 @@ app.post('/register', verifyToken, (req, res) => {
     });
 });
 
-app.put('/users/:id', verifyToken, (req, res) => {
+apiRouter.put('/users/:id', verifyToken, (req, res) => {
     if (req.user.role !== 'Admin') {
         return res.status(403).send('Access forbidden: admins only');
     }
@@ -148,7 +146,7 @@ app.put('/users/:id', verifyToken, (req, res) => {
     });
 });
 
-app.post('/change-password', verifyToken, (req, res) => {
+apiRouter.post('/change-password', verifyToken, (req, res) => {
     const { oldPassword, newPassword } = req.body;
 
     db.query('SELECT password FROM users WHERE id = ?', [req.user.id], (err, results) => {
@@ -172,7 +170,7 @@ app.post('/change-password', verifyToken, (req, res) => {
     });
 });
 
-app.post('/change-profile', verifyToken, (req, res) => {
+apiRouter.post('/change-profile', verifyToken, (req, res) => {
     const { newName, newEmail } = req.body;
 
     db.query('UPDATE users SET name = ?, email = ? WHERE id = ?', [newName, newEmail, req.user.id], (err, results) => {
@@ -183,7 +181,7 @@ app.post('/change-profile', verifyToken, (req, res) => {
     });
 });
 
-app.get('/users', verifyToken, (req, res) => {
+apiRouter.get('/users', verifyToken, (req, res) => {
     if (req.user.role !== 'Admin') {
         return res.status(403).send('Access forbidden: admins only');
     }
@@ -191,7 +189,7 @@ app.get('/users', verifyToken, (req, res) => {
     const query = `
         SELECT users.id, users.name, users.email, roles.role_name
         FROM users
-                 JOIN roles ON users.role_id = roles.id
+        JOIN roles ON users.role_id = roles.id
     `;
 
     db.query(query, (err, results) => {
@@ -202,7 +200,7 @@ app.get('/users', verifyToken, (req, res) => {
     });
 });
 
-app.get('/roles', verifyToken, (req, res) => {
+apiRouter.get('/roles', verifyToken, (req, res) => {
     if (req.user.role !== 'Admin') {
         return res.status(403).send('Access forbidden: admins only');
     }
@@ -218,6 +216,9 @@ app.get('/roles', verifyToken, (req, res) => {
         res.json(results);
     });
 });
+
+// Use the /api base route for the API
+app.use('/api', apiRouter);
 
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);

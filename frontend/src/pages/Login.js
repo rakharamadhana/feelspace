@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../api';
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -9,7 +9,7 @@ const Login = () => {
     const navigate = useNavigate();
 
     const handleLogin = () => {
-        axios.post(`${process.env.REACT_APP_API_URL}/login`, { email, password })
+        api.post('/login', { email, password })
             .then(response => {
                 localStorage.setItem('token', response.data.token);
                 localStorage.setItem('role', response.data.role);

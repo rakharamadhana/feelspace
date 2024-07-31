@@ -5,7 +5,8 @@
     "start-backend": "npm start --prefix backend"
   },
   "dependencies": {
-    "dotenv": "^16.4.5",
-    "concurrently": "^6.2.1"
+    "concurrently": "^6.2.1",
+    "config": "^3.3.12",
+    "dotenv": "^16.4.5"
   }
 }
