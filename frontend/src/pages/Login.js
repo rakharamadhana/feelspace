@@ -43,14 +43,20 @@ const Login = () => {
 
     return (
         <div className="flex items-center justify-center min-h-screen" style={{ backgroundColor: '#fff4e3' }}>
-            <div className="flex w-full max-w-9xl mx-auto bg-[#fff4e3]">
-                <div className="flex-1 flex flex-col justify-center items-center text-center p-8">
-                    <h1 className="text-9xl font-bold text-orange-600 mb-4">玩轉情緒學習平台</h1>
-                    <h2 className="text-7xl font-semibold text-gray-800">FeelSpace Navigator</h2>
+            <div className="flex flex-col lg:flex-row xl:flex-row w-full max-w-6xl mx-auto bg-[#fff4e3]">
+                {/* Text Section */}
+                <div className="flex-1 flex flex-col justify-center items-center lg:items-start xl:items-start text-center lg:text-left xl:text-left p-6 lg:p-12 xl:p-16">
+                    <h1 className="text-4xl lg:text-5xl xl:text-5xl font-bold text-orange-600 mb-4 lg:mb-6 xl:mb-8">
+                        玩轉情緒學習平台
+                    </h1>
+                    <h2 className="text-2xl lg:text-4xl xl:text-5xl font-semibold text-gray-800">
+                        FeelSpace Navigator
+                    </h2>
                 </div>
-                <div className="flex-1 flex justify-center items-center p-10">
-                    <div className="bg-white p-10 rounded-lg shadow-lg w-full max-w-4xl">
-                        <h1 className="text-3xl font-bold mb-8 text-gray-800">歡迎！登入你的帳號</h1>
+                {/* Form Section */}
+                <div className="flex-1 flex justify-center items-center p-6 lg:p-12 xl:p-16">
+                    <div className="bg-white p-8 lg:p-10 xl:p-12 rounded-lg shadow-lg w-full max-w-md">
+                        <h1 className="text-2xl lg:text-3xl xl:text-4xl font-bold mb-8 text-gray-800">歡迎！登入你的帳號</h1>
                         {error && <p className="text-red-500 mb-4">{error}</p>}
                         <input
                             type="email"
