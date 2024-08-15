@@ -9,6 +9,7 @@ import AdminDashboard from './pages/AdminDashboard';
 import TeacherDashboard from './pages/TeacherDashboard';
 import StudentDashboard from './pages/StudentDashboard';
 import CaseStudy from './pages/CaseStudy'; // Import the CaseStudy component
+import CaseStudyDetail from './pages/CaseStudyDetail'; // Import the CaseStudy component
 import Profile from './pages/Profile';
 import ProtectedRoute from './components/ProtectedRoute';
 import UsersDatabase from './components/UsersDatabase'; // Import the UsersDatabase component
@@ -30,6 +31,7 @@ function App() {
                 <Route path="/teacher-dashboard" element={<ProtectedRoute element={<TeacherDashboard />} />} />
                 <Route path="/student-dashboard" element={<ProtectedRoute element={<StudentDashboard />} />} />
                 <Route path="/case-study" element={<ProtectedRoute element={<CaseStudy />} />} />
+                <Route path="/case-study-detail" element={<ProtectedRoute element={<CaseStudyDetail />} />} />
                 <Route path="/profile" element={<ProtectedRoute element={<Profile />} />} />
                 <Route path="/users-database" element={<ProtectedRoute element={<UsersDatabase />} />} />
                 <Route path="/roles-database" element={<ProtectedRoute  element={<RolesDatabase />} />} />
