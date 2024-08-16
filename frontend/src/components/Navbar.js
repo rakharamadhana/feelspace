@@ -2,6 +2,9 @@ import { Disclosure, Menu, Transition } from '@headlessui/react';
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 import { Fragment } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faHome, faUser } from '@fortawesome/free-solid-svg-icons';
+
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ');
@@ -11,6 +14,7 @@ const Navbar = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const role = localStorage.getItem('role');
+    const userName = localStorage.getItem('name');
 
     const navigation = [
         { name: 'Home', href: `/${role.toLowerCase()}-dashboard`, current: location.pathname === `/${role.toLowerCase()}-dashboard` },
@@ -50,29 +54,37 @@ const Navbar = () => {
                                                 to={item.href}
                                                 className={classNames(
                                                     item.current ? 'bg-orange-700 text-white' : 'bg-orange-500 text-white hover:bg-orange-700 hover:text-white',
-                                                    'rounded-md px-3 py-2 text-sm font-medium'
+                                                    item.name === "Home" ? 'rounded-full px-6 py-3 flex items-center space-x-2 text-md font-bold' : 'rounded-md px-3 py-2 text-sm font-medium'
                                                 )}
                                                 aria-current={item.current ? 'page' : undefined}
                                             >
+                                                {item.name === "Home" && (
+                                                    <FontAwesomeIcon icon={faHome} className="mr-2 text-xl"/>
+                                                )}
                                                 {item.name}
                                             </Link>
                                         ))}
                                     </div>
                                 </div>
                             </div>
-                            <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+                            <div
+                                className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
                                 {/* Profile dropdown */}
                                 <Menu as="div" className="relative ml-3">
-                                    <div>
-                                        <Menu.Button className="flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
+                                    <div className="flex items-center">
+                                        <Menu.Button
+                                            className="flex items-center rounded-full bg-orange-500 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-orange-800">
                                             <span className="sr-only">Open user menu</span>
-                                            <img
-                                                className="h-8 w-8 rounded-full"
-                                                src="https://via.placeholder.com/64x64"
-                                                alt=""
+                                            <FontAwesomeIcon
+                                                icon={faUser}
+                                                className="h-6 w-6 text-white rounded-xl p-2"
                                             />
                                         </Menu.Button>
+                                        {/* Display user's name next to the button */}
+                                        <span
+                                            className="ml-2 text-black font-medium">{userName}</span> {/* Name in black */}
                                     </div>
+
                                     <Transition
                                         as={Fragment}
                                         enter="transition ease-out duration-100"
@@ -82,9 +94,10 @@ const Navbar = () => {
                                         leaveFrom="transform opacity-100 scale-100"
                                         leaveTo="transform opacity-0 scale-95"
                                     >
-                                        <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                                        <Menu.Items
+                                            className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                                             <Menu.Item>
-                                                {({ active }) => (
+                                            {({ active }) => (
                                                     <Link
                                                         to="/profile"
                                                         className={classNames(
