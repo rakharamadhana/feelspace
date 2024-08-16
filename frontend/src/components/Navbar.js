@@ -1,5 +1,5 @@
 import { Disclosure, Menu, Transition } from '@headlessui/react';
-import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 import { Fragment } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 
@@ -11,7 +11,6 @@ const Navbar = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const role = localStorage.getItem('role');
-    const name = localStorage.getItem('name');
 
     const navigation = [
         { name: 'Home', href: `/${role.toLowerCase()}-dashboard`, current: location.pathname === `/${role.toLowerCase()}-dashboard` },

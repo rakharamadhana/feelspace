@@ -18,7 +18,6 @@ import RolesDatabase from './components/RolesDatabase';
 
 
 function App() {
-    const isAuthenticated = !!localStorage.getItem('token');
 
     return (
         <Router>

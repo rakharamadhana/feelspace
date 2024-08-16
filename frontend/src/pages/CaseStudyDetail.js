@@ -11,17 +11,12 @@ import DemandInterface from '../components/CaseStudy/DemandInterface';
 import RequestInterface from '../components/CaseStudy/RequestInterface';
 import ConclusionInterface from '../components/CaseStudy/ConclusionInterface';
 import CharacterSelection from '../components/CaseStudy/CharacterSelection';
-import FadeIn from '../components/FadeIn';
 
 const CaseStudyDetail = () => {
     const role = localStorage.getItem('role');
     const [selectedCharacter, setSelectedCharacter] = useState(null);
     const [view, setView] = useState('emotionSelection');
     const [fadeRightCard, setFadeRightCard] = useState(true);
-    const [emotionAnswer, setEmotionAnswer] = useState({
-        selectedEmotion: '',
-        reasoning: ''
-    });
 
     const [previousAnswers, setPreviousAnswers] = useState({
         observe: '',
