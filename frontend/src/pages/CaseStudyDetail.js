@@ -44,9 +44,24 @@ const CaseStudyDetail = () => {
         }, 300);
     };
 
-    const handlePreviousClick = () => {
+    const handlePreviousClick = (currentAnswer) => {
         setFadeRightCard(false);
         setTimeout(() => {
+            // Save the current answer before moving to the previous view
+            if (view === 'observeInterface') {
+                setPreviousAnswers(prev => ({ ...prev, observe: currentAnswer }));
+            } else if (view === 'feelingInterface') {
+                setPreviousAnswers(prev => ({ ...prev, feeling: currentAnswer }));
+            } else if (view === 'demandInterface') {
+                setPreviousAnswers(prev => ({ ...prev, need: currentAnswer }));
+            } else if (view === 'requestInterface') {
+                setPreviousAnswers(prev => ({ ...prev, request: currentAnswer }));
+            } else if (view === 'conclusionInterface') {
+                setPreviousAnswers(prev => ({ ...prev, conclusion: currentAnswer }));
+            }
+            setFadeRightCard(true);
+
+            // Then change the view
             if (view === 'emotionSelection') {
                 setSelectedCharacter(null);
             } else if (view === 'observeInterface') {
@@ -67,6 +82,7 @@ const CaseStudyDetail = () => {
     const handleNextClick = (currentAnswer) => {
         setFadeRightCard(false);
         setTimeout(() => {
+            // Save the current answer before moving to the next view
             if (view === 'emotionSelection') {
                 setPreviousAnswers(prev => ({
                     ...prev,
