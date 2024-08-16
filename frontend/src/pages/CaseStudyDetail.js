@@ -11,6 +11,7 @@ import DemandInterface from '../components/CaseStudy/DemandInterface';
 import RequestInterface from '../components/CaseStudy/RequestInterface';
 import ConclusionInterface from '../components/CaseStudy/ConclusionInterface';
 import CharacterSelection from '../components/CaseStudy/CharacterSelection';
+import FadeIn from '../components/FadeIn';  // Import the FadeIn component
 
 const CaseStudyDetail = () => {
     const role = localStorage.getItem('role');
@@ -112,97 +113,98 @@ const CaseStudyDetail = () => {
         navigate('/case-study'); // Redirect after saving
     };
 
-
     return (
-        <div className="min-h-screen flex flex-col" style={{ backgroundColor: '#fff4e3' }}>
-            <Navbar role={role} />
-            <div className="flex flex-col items-center text-black">
-                {selectedCharacter ? (
-                    <>
-                        <CaseTitle title="案例探討" />
-                        <StoryTitleBox
-                            title="案例一"
-                            borderColor="border-red-300"
-                            textColor="text-red-300"
-                            bgColor="bg-white"
-                        />
-                        <div
-                            className="flex flex-col lg:flex-row w-full max-w-6xl space-y-6 lg:space-y-0 lg:space-x-6 mb-8">
-                            {view !== 'conclusionInterface' && (
-                                <StoryContent character={selectedCharacter}/>
-                            )}
+        <div className="min-h-screen flex flex-col" style={{backgroundColor: '#fff4e3'}}>
+            <Navbar role={role}/>
+            <FadeIn>
+                <div className="flex flex-col items-center text-black">
+                    {selectedCharacter ? (
+                        <>
+                            <CaseTitle title="案例探討"/>
+                            <StoryTitleBox
+                                title="案例一"
+                                borderColor="border-red-300"
+                                textColor="text-red-300"
+                                bgColor="bg-white"
+                            />
                             <div
-                                className={`flex-1 transition-opacity duration-300 ${
+                                className="flex flex-col lg:flex-row w-full max-w-6xl space-y-6 lg:space-y-0 lg:space-x-6 mb-8">
+                                {view !== 'conclusionInterface' && (
+                                    <StoryContent character={selectedCharacter}/>
+                                )}
+                                <div
+                                    className={`flex-1 transition-opacity duration-300 ${
+                                        fadeRightCard ? 'opacity-100' : 'opacity-0'
+                                    }`}
+                                >
+                                    {view === 'emotionSelection' ? (
+                                        <EmotionSelection
+                                            character={selectedCharacter}
+                                            onBackClick={handlePreviousClick}
+                                            onNextClick={handleNextClick}
+                                            initialEmotion={previousAnswers.selectedEmotion}
+                                            initialReasoning={previousAnswers.reasoning}
+                                        />
+                                    ) : view === 'observeInterface' ? (
+                                        <ObserveInterface
+                                            character={selectedCharacter}
+                                            onBackClick={handlePreviousClick}
+                                            onNextClick={(text) => handleNextClick(text)}
+                                            initialValue={previousAnswers.observe}
+                                        />
+                                    ) : view === 'feelingInterface' ? (
+                                        <FeelingInterface
+                                            character={selectedCharacter}
+                                            onBackClick={handlePreviousClick}
+                                            onNextClick={(text) => handleNextClick(text)}
+                                            initialValue={previousAnswers.feeling}
+                                        />
+                                    ) : view === 'demandInterface' ? (
+                                        <DemandInterface
+                                            character={selectedCharacter}
+                                            onBackClick={handlePreviousClick}
+                                            onNextClick={(text) => handleNextClick(text)}
+                                            initialValue={previousAnswers.need}
+                                        />
+                                    ) : view === 'requestInterface' ? (
+                                        <RequestInterface
+                                            character={selectedCharacter}
+                                            onBackClick={handlePreviousClick}
+                                            onNextClick={(text) => handleNextClick(text)}
+                                            initialValue={previousAnswers.request}
+                                        />
+                                    ) : view === 'conclusionInterface' ? (
+                                        <ConclusionInterface
+                                            character={selectedCharacter}
+                                            previousAnswers={previousAnswers}
+                                            onBackClick={handlePreviousClick}
+                                            onSaveClick={handleSaveClick}
+                                        />
+                                    ) : null}
+                                </div>
+                            </div>
+                        </>
+                    ) : (
+                        <>
+                            <CaseTitle title="案例探討"/>
+                            <StoryTitleBox
+                                title="案例一"
+                                borderColor="border-red-300"
+                                textColor="text-red-300"
+                                bgColor="bg-white"
+                            />
+                            <div
+                                className={`flex flex-col lg:flex-row w-full max-w-6xl space-y-6 lg:space-y-0 lg:space-x-6 mb-8 transition-opacity duration-200 ${
                                     fadeRightCard ? 'opacity-100' : 'opacity-0'
                                 }`}
                             >
-                                {view === 'emotionSelection' ? (
-                                    <EmotionSelection
-                                        character={selectedCharacter}
-                                        onBackClick={handlePreviousClick}
-                                        onNextClick={handleNextClick}
-                                        initialEmotion={previousAnswers.selectedEmotion}
-                                        initialReasoning={previousAnswers.reasoning}
-                                    />
-                                ) : view === 'observeInterface' ? (
-                                    <ObserveInterface
-                                        character={selectedCharacter}
-                                        onBackClick={handlePreviousClick}
-                                        onNextClick={(text) => handleNextClick(text)}
-                                        initialValue={previousAnswers.observe}
-                                    />
-                                ) : view === 'feelingInterface' ? (
-                                    <FeelingInterface
-                                        character={selectedCharacter}
-                                        onBackClick={handlePreviousClick}
-                                        onNextClick={(text) => handleNextClick(text)}
-                                        initialValue={previousAnswers.feeling}
-                                    />
-                                ) : view === 'demandInterface' ? (
-                                    <DemandInterface
-                                        character={selectedCharacter}
-                                        onBackClick={handlePreviousClick}
-                                        onNextClick={(text) => handleNextClick(text)}
-                                        initialValue={previousAnswers.need}
-                                    />
-                                ) : view === 'requestInterface' ? (
-                                    <RequestInterface
-                                        character={selectedCharacter}
-                                        onBackClick={handlePreviousClick}
-                                        onNextClick={(text) => handleNextClick(text)}
-                                        initialValue={previousAnswers.request}
-                                    />
-                                ) : view === 'conclusionInterface' ? (
-                                    <ConclusionInterface
-                                        character={selectedCharacter}
-                                        previousAnswers={previousAnswers}
-                                        onBackClick={handlePreviousClick}
-                                        onSaveClick={handleSaveClick}
-                                    />
-                                ) : null}
+                                <StoryContent character="initial"/>
                             </div>
-                        </div>
-                    </>
-                ) : (
-                    <>
-                        <CaseTitle title="案例探討"/>
-                        <StoryTitleBox
-                            title="案例一"
-                            borderColor="border-red-300"
-                            textColor="text-red-300"
-                            bgColor="bg-white"
-                        />
-                        <div
-                            className={`flex flex-col lg:flex-row w-full max-w-6xl space-y-6 lg:space-y-0 lg:space-x-6 mb-8 transition-opacity duration-200 ${
-                                fadeRightCard ? 'opacity-100' : 'opacity-0'
-                            }`}
-                        >
-                            <StoryContent character="initial"/>
-                        </div>
-                        <CharacterSelection onSelectCharacter={handleCharacterClick}/>
-                    </>
-                )}
-            </div>
+                            <CharacterSelection onSelectCharacter={handleCharacterClick}/>
+                        </>
+                    )}
+                </div>
+            </FadeIn>
         </div>
     );
 };
