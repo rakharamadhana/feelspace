@@ -22,8 +22,8 @@ const EmotionSelection = ({ character, onBackClick, onNextClick, initialEmotion,
                                 type="radio"
                                 name="emotion"
                                 className="mr-2"
-                                checked={selectedEmotion === '生氣的'}
-                                onChange={() => setSelectedEmotion('生氣的')}
+                                checked={selectedEmotion === 1}
+                                onChange={() => setSelectedEmotion(1)}
                             />
                             <span className="text-2xl lg:text-3xl mr-2">😡</span>
                             <span className="text-lg lg:text-xl">生氣的</span>
@@ -33,8 +33,8 @@ const EmotionSelection = ({ character, onBackClick, onNextClick, initialEmotion,
                                 type="radio"
                                 name="emotion"
                                 className="mr-2"
-                                checked={selectedEmotion === '冤望的'}
-                                onChange={() => setSelectedEmotion('冤望的')}
+                                checked={selectedEmotion === 2}
+                                onChange={() => setSelectedEmotion(2)}
                             />
                             <span className="text-2xl lg:text-3xl mr-2">😔</span>
                             <span className="text-lg lg:text-xl">冤望的</span>
@@ -44,8 +44,8 @@ const EmotionSelection = ({ character, onBackClick, onNextClick, initialEmotion,
                                 type="radio"
                                 name="emotion"
                                 className="mr-2"
-                                checked={selectedEmotion === '焦急的'}
-                                onChange={() => setSelectedEmotion('焦急的')}
+                                checked={selectedEmotion === 3}
+                                onChange={() => setSelectedEmotion(3)}
                             />
                             <span className="text-2xl lg:text-3xl mr-2">😰</span>
                             <span className="text-lg lg:text-xl">焦急的</span>
@@ -55,8 +55,8 @@ const EmotionSelection = ({ character, onBackClick, onNextClick, initialEmotion,
                                 type="radio"
                                 name="emotion"
                                 className="mr-2"
-                                checked={selectedEmotion === '難過的'}
-                                onChange={() => setSelectedEmotion('難過的')}
+                                checked={selectedEmotion === 4}
+                                onChange={() => setSelectedEmotion(4)}
                             />
                             <span className="text-2xl lg:text-3xl mr-2">😭</span>
                             <span className="text-lg lg:text-xl">難過的</span>
@@ -69,8 +69,8 @@ const EmotionSelection = ({ character, onBackClick, onNextClick, initialEmotion,
                                 type="radio"
                                 name="emotion"
                                 className="mr-2"
-                                checked={selectedEmotion === '失望的'}
-                                onChange={() => setSelectedEmotion('失望的')}
+                                checked={selectedEmotion === 1}
+                                onChange={() => setSelectedEmotion(1)}
                             />
                             <span className="text-2xl lg:text-3xl mr-2">😡</span>
                             <span className="text-lg lg:text-xl">失望的</span>
@@ -80,8 +80,8 @@ const EmotionSelection = ({ character, onBackClick, onNextClick, initialEmotion,
                                 type="radio"
                                 name="emotion"
                                 className="mr-2"
-                                checked={selectedEmotion === '冤望的'}
-                                onChange={() => setSelectedEmotion('冤望的')}
+                                checked={selectedEmotion === 2}
+                                onChange={() => setSelectedEmotion(2)}
                             />
                             <span className="text-2xl lg:text-3xl mr-2">😔</span>
                             <span className="text-lg lg:text-xl">冤望的</span>
@@ -91,8 +91,8 @@ const EmotionSelection = ({ character, onBackClick, onNextClick, initialEmotion,
                                 type="radio"
                                 name="emotion"
                                 className="mr-2"
-                                checked={selectedEmotion === '焦急的'}
-                                onChange={() => setSelectedEmotion('焦急的')}
+                                checked={selectedEmotion === 3}
+                                onChange={() => setSelectedEmotion(3)}
                             />
                             <span className="text-2xl lg:text-3xl mr-2">😰</span>
                             <span className="text-lg lg:text-xl">焦急的</span>
@@ -102,8 +102,8 @@ const EmotionSelection = ({ character, onBackClick, onNextClick, initialEmotion,
                                 type="radio"
                                 name="emotion"
                                 className="mr-2"
-                                checked={selectedEmotion === '難過的'}
-                                onChange={() => setSelectedEmotion('難過的')}
+                                checked={selectedEmotion === 4}
+                                onChange={() => setSelectedEmotion(4)}
                             />
                             <span className="text-2xl lg:text-3xl mr-2">😭</span>
                             <span className="text-lg lg:text-xl">難過的</span>

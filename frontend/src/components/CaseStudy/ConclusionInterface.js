@@ -14,7 +14,48 @@ const ConclusionInterface = ({ previousAnswers, character, onBackClick, onSaveCl
                 <div className="text-left text-lg lg:text-xl space-y-2 font-semibold">
                     <div className="flex flex-col">
                         <span className="text-orange-500 lg:text-3xl">情緒選擇:</span>
-                        <span>{previousAnswers.selectedEmotion}</span>
+                        {(() => {
+                            switch(previousAnswers.selectedEmotion) {
+                                case 1:
+                                    return (
+                                        <>
+                                            <span className="inline-flex items-center">
+                                                <span className="text-2xl lg:text-3xl">😡</span>
+                                                <span className="text-lg lg:text-xl">失望的</span>
+                                            </span>
+                                        </>
+                                    );
+                                case 2:
+                                    return (
+                                        <>
+                                            <span className="inline-flex items-center">
+                                                <span className="text-2xl lg:text-3xl">😔</span>
+                                                <span className="text-lg lg:text-xl">冤望的</span>
+                                            </span>
+                                        </>
+                                    );
+                                case 3:
+                                    return (
+                                        <>
+                                            <span className="inline-flex items-center">
+                                                <span className="text-2xl lg:text-3xl">😰</span>
+                                                <span className="text-lg lg:text-xl">焦急的</span>
+                                            </span>
+                                        </>
+                                    );
+                                case 4:
+                                    return (
+                                        <>
+                                            <span className="inline-flex items-center">
+                                                <span className="text-2xl lg:text-3xl">😭</span>
+                                                <span className="text-lg lg:text-xl">難過的</span>
+                                            </span>
+                                        </>
+                                    );
+                                default:
+                                    return null; // Or a default message if you want
+                            }
+                        })()}
                     </div>
                     <div className="flex flex-col">
                         <span className="text-orange-500 lg:text-3xl">理由:</span>

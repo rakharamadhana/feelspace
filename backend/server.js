@@ -22,7 +22,7 @@ console.log(`Database Name: ${process.env.DATABASE_NAME}`);
 console.log(`CORS Origin: ${process.env.CORS_ORIGIN}`);
 
 const app = express();
-const port = process.env.PORT || 3001;
+const port = process.env.PORT;
 
 // Configure CORS based on environment variable
 const corsOptions = {
@@ -54,19 +54,22 @@ db.connect(err => {
 const verifyToken = (req, res, next) => {
     const authHeader = req.headers['authorization'];
     if (!authHeader) {
-        return res.status(401).send('Unauthorized');
+        return res.status(401).send('Unauthorized: No token provided');
     }
+
     const token = authHeader.split(' ')[1];
     if (!token) {
-        return res.status(401).send('Unauthorized');
+        return res.status(401).send('Unauthorized: Invalid token');
     }
-    try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        req.user = decoded;
+
+    jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+        if (err) {
+            return res.status(401).send('Unauthorized: Invalid token');
+        }
+
+        req.user = decoded;  // assuming the token contains user data
         next();
-    } catch (err) {
-        res.status(401).send('Unauthorized');
-    }
+    });
 };
 
 apiRouter.post('/login', (req, res) => {
@@ -222,6 +225,52 @@ apiRouter.get('/roles', verifyToken, (req, res) => {
             return res.status(500).send(err);
         }
         res.json(results);
+    });
+});
+
+apiRouter.get('/cases', verifyToken,(req, res) => {
+    const query = 'SELECT id, title, borderColor, textColor FROM cases';
+    db.query(query, (error, results) => {
+        if (error) {
+            console.error('Error fetching case studies:', error);
+            return res.status(500).send('Server error');
+        }
+        res.json(results);
+    });
+});
+
+apiRouter.get('/cases/:id', verifyToken,(req, res) => {
+    const caseId = req.params.id;  // Get the case ID from the URL
+    const query = 'SELECT id, title, story, borderColor, textColor FROM cases WHERE id = ?';
+
+    db.query(query, [caseId], (error, results) => {
+        if (error) {
+            console.error('Error fetching case study:', error);
+            return res.status(500).send('Server error');
+        }
+        if (results.length === 0) {
+            return res.status(404).send('Case not found');
+        }
+        res.json(results[0]);  // Return the first (and only) result
+    });
+});
+
+// Endpoint to save case details
+apiRouter.post('/cases/details/:id/save', verifyToken, (req, res) => {
+    const { case_id, emotion, observe, feeling, need, request, reasoning, conclusion } = req.body;
+    const created_by = req.user.id;
+
+    const query = `
+        INSERT INTO case_details (case_id, emotion, observe, feeling, need, request, reasoning, conclusion, created_by)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `;
+
+    db.query(query, [case_id, emotion, observe, feeling, need, request, reasoning, conclusion, created_by], (error, results) => {
+        if (error) {
+            console.error('Error saving case details:', error);
+            return res.status(500).send('Server error');
+        }
+        res.status(201).send('Case details saved successfully');
     });
 });
 
