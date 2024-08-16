@@ -1,8 +1,8 @@
 {
   "scripts": {
     "start": "concurrently \"yarn run start-frontend\" \"yarn run start-backend\"",
+    "build": "yarn build prod --prefix frontend",
     "start-frontend": "yarn start --prefix frontend",
-    "build prod": "yarn build prod --prefix frontend",
     "start-backend": "yarn start --prefix backend"
   },
   "dependencies": {
