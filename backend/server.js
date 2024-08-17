@@ -54,27 +54,39 @@ db.connect(err => {
 // Middleware to verify token and extract user role
 const verifyToken = (req, res, next) => {
     const authHeader = req.headers['authorization'];
-    if (!authHeader) {
-        return res.status(401).send('Unauthorized: No token provided');
-    }
+    let token = authHeader && authHeader.split(' ')[1];
 
-    const token = authHeader.split(' ')[1];
     if (!token) {
-        return res.status(401).send('Unauthorized: Invalid token');
+        // If no token in the Authorization header, check the database for a stored token
+        const userId = req.user && req.user.id;
+        if (userId) {
+            const query = 'SELECT token FROM users WHERE id = ? AND active = 1';
+            db.query(query, [userId], (err, results) => {
+                if (err || results.length === 0) {
+                    return res.status(401).send('Unauthorized: No token provided');
+                }
+                token = results[0].token;
+                verifyTokenWithJWT(token, req, res, next);
+            });
+        } else {
+            return res.status(401).send('Unauthorized: No token provided');
+        }
+    } else {
+        verifyTokenWithJWT(token, req, res, next);
     }
+};
 
+const verifyTokenWithJWT = (token, req, res, next) => {
     jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
         if (err) {
             return res.status(401).send('Unauthorized: Invalid token');
         }
-
-        req.user = decoded;  // assuming the token contains user data
+        req.user = decoded;
         next();
     });
 };
 
-// Define the getGeoLocation function to get location based on IP
-// The getGeoLocation function
+// Function to fetch geolocation based on IP address
 function getGeoLocation(ip, callback) {
     const url = `https://ipinfo.io/${ip}/geo`;
 
@@ -89,11 +101,35 @@ function getGeoLocation(ip, callback) {
         });
 }
 
+apiRouter.post('/verify-token', (req, res) => {
+    const { token } = req.body;
+
+    if (!token) {
+        return res.status(400).send('Token is required');
+    }
+
+    jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+        if (err) {
+            return res.status(401).send('Invalid token');
+        }
+
+        // If token is valid, return success status
+        res.status(200).json({
+            id: decoded.id,
+            role: decoded.role,
+            name: decoded.name,
+            email: decoded.email
+        });
+    });
+});
+
+// Login route
 apiRouter.post('/login', (req, res) => {
     console.log('Login request received:', req.body);
     const { email, password } = req.body;
     const device_type = req.headers['user-agent']; // Capture the device type from the User-Agent header
     const last_login_ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress; // Capture the IP address
+    const rememberMe = req.body.rememberMe; // Capture the "remember me" flag from the request
 
     const query = `
         SELECT users.*, roles.role_name
@@ -110,23 +146,25 @@ apiRouter.post('/login', (req, res) => {
         if (results.length > 0) {
             const user = results[0];
             if (bcrypt.compareSync(password, user.password)) {
-                const token = jwt.sign({ id: user.id, role: user.role_name }, process.env.JWT_SECRET, { expiresIn: '1h' });
+                // Set token expiration based on "Remember Me" flag
+                const tokenExpiration = rememberMe ? '7d' : '1h'; // 7 days if "remember me" is checked, otherwise 1 hour
+                const token = jwt.sign({ id: user.id, role: user.role_name }, process.env.JWT_SECRET, { expiresIn: tokenExpiration });
 
                 // Fetch the user's geolocation based on IP address
                 getGeoLocation(last_login_ip, (last_login_location) => {
-                    // Update user's last login information
+                    // Update user's last login information and save the token
                     const updateQuery = `
                         UPDATE users
-                        SET last_login_at = CURRENT_TIMESTAMP, last_login_ip = ?, last_login_location = ?, device_type = ?
+                        SET last_login_at = CURRENT_TIMESTAMP, last_login_ip = ?, last_login_location = ?, device_type = ?, token = ?
                         WHERE id = ?
                     `;
-                    db.query(updateQuery, [last_login_ip, last_login_location, device_type, user.id], (updateErr) => {
+                    db.query(updateQuery, [last_login_ip, last_login_location, device_type, token, user.id], (updateErr) => {
                         if (updateErr) {
                             console.error('Error updating last login info:', updateErr);
+                            return res.status(500).send('Error updating login information');
                         }
+                        res.json({ token, role: user.role_name, name: user.name, email: user.email });
                     });
-
-                    res.json({ token, role: user.role_name, name: user.name, email: user.email });
                 });
             } else {
                 res.status(401).send('Invalid password');

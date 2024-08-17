@@ -8,8 +8,8 @@ const StudentDashboard = () => {
 
     return (
         <div className="min-h-screen flex flex-col" style={{ backgroundColor: '#fff4e3' }}>
-            <Navbar role={role} />
             <FadeIn>
+            <Navbar role={role} />
                 <div className="flex-grow flex flex-col items-center justify-center text-black">
                     <h1 className="text-6xl lg:text-8xl xl:text-9xl font-bold mb-16">首頁</h1>
                     <div className="flex space-x-6">

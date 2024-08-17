@@ -1,8 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import FadeIn from '../components/FadeIn';
 
 const Home = () => {
     return (
+        <FadeIn>
         <div className="min-h-screen flex flex-col lg:flex-row xl:flex-row items-center justify-between bg-[#fff4e3]">
             {/* Left Section - Text and Button */}
             <div className="flex flex-col justify-center items-center lg:items-start xl:items-start w-full lg:w-1/2 xl:w-1/2 px-6 py-12 lg:py-16 xl:py-20 lg:px-12 xl:px-16">
@@ -28,6 +30,7 @@ const Home = () => {
                 />
             </div>
         </div>
+        </FadeIn>
     );
 };
 

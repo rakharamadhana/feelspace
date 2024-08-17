@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import FadeIn from '../components/FadeIn';
 import api from '../api';
 
 const Login = () => {
@@ -7,6 +8,29 @@ const Login = () => {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const navigate = useNavigate();
+
+    useEffect(() => {
+        // Check if token exists in localStorage
+        const token = localStorage.getItem('token');
+        if (token) {
+            // Verify the token with the backend
+            api.post('/verify-token', { token })
+                .then(response => {
+                    // If token is valid, redirect to the appropriate dashboard
+                    if (response.data.role === 'Admin') {
+                        navigate('/admin-dashboard');
+                    } else if (response.data.role === 'Teacher') {
+                        navigate('/teacher-dashboard');
+                    } else {
+                        navigate('/student-dashboard');
+                    }
+                })
+                .catch(() => {
+                    // If token is invalid, continue to show the login page
+                    console.error('Token verification failed');
+                });
+        }
+    }, [navigate]);
 
     const handleLogin = () => {
         api.post('/login', { email, password })
@@ -33,7 +57,6 @@ const Login = () => {
                 }
                 setError('An error occurred. Please try again later.');
             });
-
     };
 
     const handleKeyDown = (event) => {
@@ -44,6 +67,7 @@ const Login = () => {
 
     return (
         <div className="flex items-center justify-center min-h-screen" style={{ backgroundColor: '#fff4e3' }}>
+            <FadeIn>
             <div className="flex flex-col lg:flex-row xl:flex-row w-full max-w-6xl mx-auto bg-[#fff4e3]">
                 {/* Text Section */}
                 <div className="flex-1 flex flex-col justify-center items-center lg:items-start xl:items-start text-center lg:text-left xl:text-left p-6 lg:p-12 xl:p-16">
@@ -89,6 +113,7 @@ const Login = () => {
                     </div>
                 </div>
             </div>
+            </FadeIn>
         </div>
     );
 };
