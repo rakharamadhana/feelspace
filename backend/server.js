@@ -260,19 +260,74 @@ apiRouter.post('/cases/details/:id/save', verifyToken, (req, res) => {
     const { case_id, emotion, observe, feeling, need, request, reasoning, conclusion } = req.body;
     const created_by = req.user.id;
 
-    const query = `
-        INSERT INTO case_details (case_id, emotion, observe, feeling, need, request, reasoning, conclusion, created_by)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    // First, check if an entry already exists
+    const checkQuery = `
+        SELECT id FROM case_details
+        WHERE case_id = ? AND created_by = ?
     `;
 
-    db.query(query, [case_id, emotion, observe, feeling, need, request, reasoning, conclusion, created_by], (error, results) => {
+    db.query(checkQuery, [case_id, created_by], (error, results) => {
         if (error) {
-            console.error('Error saving case details:', error);
+            console.error('Error checking case details:', error);
             return res.status(500).send('Server error');
         }
-        res.status(201).send('Case details saved successfully');
+
+        if (results.length > 0) {
+            // Update the existing entry
+            const updateQuery = `
+                UPDATE case_details
+                SET emotion = ?, observe = ?, feeling = ?, need = ?, request = ?, reasoning = ?, conclusion = ?
+                WHERE id = ?
+            `;
+
+            db.query(updateQuery, [emotion, observe, feeling, need, request, reasoning, conclusion, results[0].id], (error, results) => {
+                if (error) {
+                    console.error('Error updating case details:', error);
+                    return res.status(500).send('Server error');
+                }
+                res.status(200).send('Case details updated successfully');
+            });
+        } else {
+            // Insert a new entry
+            const insertQuery = `
+                INSERT INTO case_details (case_id, emotion, observe, feeling, need, request, reasoning, conclusion, created_by)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            `;
+
+            db.query(insertQuery, [case_id, emotion, observe, feeling, need, request, reasoning, conclusion, created_by], (error, results) => {
+                if (error) {
+                    console.error('Error saving case details:', error);
+                    return res.status(500).send('Server error');
+                }
+                res.status(201).send('Case details saved successfully');
+            });
+        }
     });
 });
+
+apiRouter.get('/cases/details/:id', verifyToken, (req, res) => {
+    const { id } = req.params; // id is case_id
+    const userId = req.user.id; // userId is from the token
+
+    const query = `
+        SELECT * FROM case_details
+        WHERE case_id = ? AND created_by = ?
+    `;
+
+    db.query(query, [id, userId], (error, results) => {
+        if (error) {
+            console.error('Error fetching case details:', error);
+            return res.status(500).send('Server error');
+        }
+
+        if (results.length > 0) {
+            res.status(200).json(results[0]); // Send the first result back
+        } else {
+            res.status(200).json(null); // No previous answers found
+        }
+    });
+});
+
 
 // Use the /api base route for the API
 app.use('/api', apiRouter);

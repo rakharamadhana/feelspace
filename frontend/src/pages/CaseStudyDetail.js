@@ -25,7 +25,10 @@ const CaseStudyDetail = () => {
         observe: '',
         feeling: '',
         need: '',
-        request: ''
+        request: '',
+        selectedEmotion: '',
+        reasoning: '',
+        conclusion: ''
     });
     const navigate = useNavigate();
 
@@ -35,7 +38,7 @@ const CaseStudyDetail = () => {
         // Get the token from localStorage
         const token = localStorage.getItem('token');
 
-        // Make the API request with the Authorization header
+        // Fetch the case details
         api.get(`/cases/${id}`, {
             headers: {
                 'Authorization': `Bearer ${token}`
@@ -47,6 +50,30 @@ const CaseStudyDetail = () => {
             .catch(error => {
                 console.error('Error fetching case details:', error);
             });
+
+        // Fetch the user's previous answers for this case
+        api.get(`/cases/details/${id}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        })
+            .then(response => {
+                if (response.data) {
+                    setPreviousAnswers({
+                        observe: response.data.observe,
+                        feeling: response.data.feeling,
+                        need: response.data.need,
+                        request: response.data.request,
+                        selectedEmotion: response.data.emotion,
+                        reasoning: response.data.reasoning,
+                        conclusion: response.data.conclusion
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching previous answers:', error);
+            });
+
     }, [id]);
 
     const handleCharacterClick = (character) => {
