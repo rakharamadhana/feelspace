@@ -25,14 +25,15 @@ const Login = () => {
                 }
             })
             .catch(error => {
-                if (error.response && error.response.status === 401) {
-                    setError('Invalid email or password');
-                } else if (error.response && error.response.status === 404) {
-                    setError('User not found');
-                } else {
-                    setError('An error occurred. Please try again later.');
+                console.error('Error during login:', error);
+                if (error.response) {
+                    console.error('Response data:', error.response.data);
+                    console.error('Response status:', error.response.status);
+                    console.error('Response headers:', error.response.headers);
                 }
+                setError('An error occurred. Please try again later.');
             });
+
     };
 
     const handleKeyDown = (event) => {

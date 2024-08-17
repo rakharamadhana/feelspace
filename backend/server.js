@@ -6,6 +6,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const path = require('path');
 const dotenv = require('dotenv');
+const axios = require('axios');
 
 // Define a new base route for the API
 const apiRouter = express.Router();
@@ -72,9 +73,28 @@ const verifyToken = (req, res, next) => {
     });
 };
 
+// Define the getGeoLocation function to get location based on IP
+// The getGeoLocation function
+function getGeoLocation(ip, callback) {
+    const url = `https://ipinfo.io/${ip}/geo`;
+
+    axios.get(url)
+        .then(response => {
+            const info = response.data;
+            callback(`${info.city}, ${info.country}`);
+        })
+        .catch(error => {
+            console.error('Error fetching geolocation:', error);
+            callback("Unknown");
+        });
+}
+
 apiRouter.post('/login', (req, res) => {
     console.log('Login request received:', req.body);
     const { email, password } = req.body;
+    const device_type = req.headers['user-agent']; // Capture the device type from the User-Agent header
+    const last_login_ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress; // Capture the IP address
+
     const query = `
         SELECT users.*, roles.role_name
         FROM users
@@ -91,7 +111,23 @@ apiRouter.post('/login', (req, res) => {
             const user = results[0];
             if (bcrypt.compareSync(password, user.password)) {
                 const token = jwt.sign({ id: user.id, role: user.role_name }, process.env.JWT_SECRET, { expiresIn: '1h' });
-                res.json({ token, role: user.role_name, name: user.name, email: user.email });
+
+                // Fetch the user's geolocation based on IP address
+                getGeoLocation(last_login_ip, (last_login_location) => {
+                    // Update user's last login information
+                    const updateQuery = `
+                        UPDATE users
+                        SET last_login_at = CURRENT_TIMESTAMP, last_login_ip = ?, last_login_location = ?, device_type = ?
+                        WHERE id = ?
+                    `;
+                    db.query(updateQuery, [last_login_ip, last_login_location, device_type, user.id], (updateErr) => {
+                        if (updateErr) {
+                            console.error('Error updating last login info:', updateErr);
+                        }
+                    });
+
+                    res.json({ token, role: user.role_name, name: user.name, email: user.email });
+                });
             } else {
                 res.status(401).send('Invalid password');
             }
