@@ -339,7 +339,7 @@ apiRouter.post('/cases/details/:id/:character_id/save', verifyToken, (req, res) 
         if (results.length > 0) {
             // Update existing record
             const updateQuery = `
-                UPDATE case_details 
+                UPDATE case_details
                 SET emotion = ?, observe = ?, feeling = ?, need = ?, request = ?, reasoning = ?, conclusion = ?, modified_at = CURRENT_TIMESTAMP
                 WHERE id = ?
             `;
@@ -351,10 +351,10 @@ apiRouter.post('/cases/details/:id/:character_id/save', verifyToken, (req, res) 
                 res.status(200).send('Case details updated successfully');
             });
         } else {
-            // Insert new record
+            // Insert new record with created_at and modified_at handled by default CURRENT_TIMESTAMP
             const insertQuery = `
-                INSERT INTO case_details (case_id, character_id, emotion, observe, feeling, need, request, reasoning, conclusion, created_by)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                INSERT INTO case_details (case_id, character_id, emotion, observe, feeling, need, request, reasoning, conclusion, created_by, created_at, modified_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
             `;
             db.query(insertQuery, [id, character_id, emotion, observe, feeling, need, request, reasoning, conclusion, created_by], (insertError) => {
                 if (insertError) {
@@ -366,7 +366,6 @@ apiRouter.post('/cases/details/:id/:character_id/save', verifyToken, (req, res) 
         }
     });
 });
-
 
 // Use the /api base route for the API
 app.use('/api', apiRouter);
