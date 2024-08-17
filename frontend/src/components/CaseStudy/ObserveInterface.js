@@ -1,4 +1,4 @@
-import React, {  useState, useEffect  } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const ObserveInterface = ({ character, onBackClick, onNextClick, initialValue }) => {
     const [observeText, setObserveText] = useState(initialValue || '');
@@ -7,13 +7,7 @@ const ObserveInterface = ({ character, onBackClick, onNextClick, initialValue })
         setObserveText(initialValue || '');
     }, [initialValue]);
 
-    let observeQuestion = '';
-
-    if (character === 'Mother') {
-        observeQuestion = '如果你是媽媽，該如何運用非暴力溝通的「觀察」說明自己情緒的狀況呢？';
-    } else if (character === 'XiaoLi') {
-        observeQuestion = '如果你是小李，該如何運用非暴力溝通的「觀察」說明自己情緒的狀況呢？';
-    }
+    const observeQuestion = `如果你是${character.character_name}，該如何運用非暴力溝通的「觀察」說明自己情緒的狀況呢？`;
 
     return (
         <div className="flex-1 bg-white p-6 rounded-3xl h-96 shadow-lg">
@@ -21,9 +15,9 @@ const ObserveInterface = ({ character, onBackClick, onNextClick, initialValue })
                 <span className="text-orange-500 font-extrabold">觀察</span>
                 <div className="flex-grow border-t-2 border-gray-300 mx-2"></div>
                 <span className="text-gray-500">感受</span>
-                <div className="flex-grow border-t-2  border-gray-300 mx-2"></div>
+                <div className="flex-grow border-t-2 border-gray-300 mx-2"></div>
                 <span className="text-gray-500">需要</span>
-                <div className="flex-grow border-t-2  border-gray-300 mx-2"></div>
+                <div className="flex-grow border-t-2 border-gray-300 mx-2"></div>
                 <span className="text-gray-500">請求</span>
             </div>
             <p className="text-lg lg:text-xl font-semibold mb-4">
@@ -35,7 +29,7 @@ const ObserveInterface = ({ character, onBackClick, onNextClick, initialValue })
                 value={observeText}
                 onChange={(e) => setObserveText(e.target.value)}
                 rows="4"
-                style={{resize: "none" }}
+                style={{ resize: "none" }}
             ></textarea>
             <div className="flex justify-between mt-6">
                 <button

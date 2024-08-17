@@ -17,6 +17,7 @@ import api from '../api';
 const CaseStudyDetail = () => {
     const { id } = useParams();
     const [caseDetails, setCaseDetails] = useState(null);
+    const [characters, setCharacters] = useState([]); // State to store character data
     const role = localStorage.getItem('role');
     const [selectedCharacter, setSelectedCharacter] = useState(null);
     const [view, setView] = useState('emotionSelection');
@@ -51,30 +52,56 @@ const CaseStudyDetail = () => {
                 console.error('Error fetching case details:', error);
             });
 
-        // Fetch the user's previous answers for this case
-        api.get(`/cases/details/${id}`, {
+        // Fetch the characters for this case
+        api.get(`/cases/${id}/characters`, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
         })
             .then(response => {
-                if (response.data) {
-                    setPreviousAnswers({
-                        observe: response.data.observe,
-                        feeling: response.data.feeling,
-                        need: response.data.need,
-                        request: response.data.request,
-                        selectedEmotion: response.data.emotion,
-                        reasoning: response.data.reasoning,
-                        conclusion: response.data.conclusion
-                    });
-                }
+                setCharacters(response.data); // Set the character data
             })
             .catch(error => {
-                console.error('Error fetching previous answers:', error);
+                console.error('Error fetching characters:', error);
             });
 
-    }, [id]);
+        // Fetch the user's previous answers for this case and character
+        if (selectedCharacter) {
+            api.get(`/cases/details/${id}/${selectedCharacter.id}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
+                .then(response => {
+                    if (response.data) {
+                        setPreviousAnswers({
+                            observe: response.data.observe,
+                            feeling: response.data.feeling,
+                            need: response.data.need,
+                            request: response.data.request,
+                            selectedEmotion: response.data.emotion,
+                            reasoning: response.data.reasoning,
+                            conclusion: response.data.conclusion
+                        });
+                    } else {
+                        // If no previous answers, reset to default values
+                        setPreviousAnswers({
+                            observe: '',
+                            feeling: '',
+                            need: '',
+                            request: '',
+                            selectedEmotion: '',
+                            reasoning: '',
+                            conclusion: ''
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching previous answers:', error);
+                });
+        }
+
+    }, [id, selectedCharacter]); // Add selectedCharacter as a dependency
 
     const handleCharacterClick = (character) => {
         setFadeRightCard(false);
@@ -148,6 +175,7 @@ const CaseStudyDetail = () => {
     const handleSaveClick = (conclusionAnswer) => {
         const finalData = {
             case_id: id,
+            character_id: selectedCharacter.id,
             emotion: previousAnswers.selectedEmotion,
             observe: previousAnswers.observe,
             feeling: previousAnswers.feeling,
@@ -159,7 +187,7 @@ const CaseStudyDetail = () => {
 
         const token = localStorage.getItem('token');
 
-        api.post(`/cases/details/${id}/save`, finalData, {
+        api.post(`/cases/details/${id}/${selectedCharacter.id}/save`, finalData, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
@@ -267,7 +295,10 @@ const CaseStudyDetail = () => {
                                             story={caseDetails.story}
                                         />
                                     </div>
-                                    <CharacterSelection onSelectCharacter={handleCharacterClick} />
+                                    <CharacterSelection
+                                        onSelectCharacter={handleCharacterClick}
+                                        characters={characters} // Pass the character data to the component
+                                    />
                                 </>
                             )}
                         </>

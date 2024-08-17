@@ -1,5 +1,4 @@
-import React, {useEffect, useState} from 'react';
-import {request} from "axios";
+import React, { useEffect, useState } from 'react';
 
 const RequestInterface = ({ character, onBackClick, onNextClick, initialValue }) => {
     const [requestText, setRequestText] = useState(initialValue || '');
@@ -8,13 +7,7 @@ const RequestInterface = ({ character, onBackClick, onNextClick, initialValue })
         setRequestText(initialValue || '');
     }, [initialValue]);
 
-    let requestQuestion = '';
-
-    if (character === 'Mother') {
-        requestQuestion = '如果你是媽媽，該如何運用非暴力溝通的「請求」說明自己情緒的狀況呢？';
-    } else if (character === 'XiaoLi') {
-        requestQuestion = '如果你是小李，該如何運用非暴力溝通的「請求」說明自己情緒的狀況呢？';
-    }
+    const requestQuestion = `如果你是${character.character_name}，該如何運用非暴力溝通的「請求」說明自己情緒的狀況呢？`;
 
     return (
         <div className="flex-1 bg-white p-6 rounded-3xl h-96 shadow-lg">
@@ -36,7 +29,7 @@ const RequestInterface = ({ character, onBackClick, onNextClick, initialValue })
                 value={requestText}
                 onChange={(e) => setRequestText(e.target.value)}
                 rows="4"
-                style={{resize: "none"}}
+                style={{ resize: "none" }}
             ></textarea>
             <div className="flex justify-between mt-6">
                 <button

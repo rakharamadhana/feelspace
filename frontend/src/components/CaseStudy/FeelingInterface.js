@@ -1,19 +1,13 @@
 import React, { useState, useEffect } from 'react';
 
-const FeelingInterface = ({ character, onBackClick, onNextClick, initialValue  }) => {
-    const [feelingText , setFeelingText] = useState(initialValue || '');
+const FeelingInterface = ({ character, onBackClick, onNextClick, initialValue }) => {
+    const [feelingText, setFeelingText] = useState(initialValue || '');
 
     useEffect(() => {
         setFeelingText(initialValue || '');
     }, [initialValue]);
 
-    let feelingQuestion = '';
-
-    if (character === 'Mother') {
-        feelingQuestion = '如果你是媽媽，該如何運用非暴力溝通的「感受」說明自己情緒的狀況呢？';
-    } else if (character === 'XiaoLi') {
-        feelingQuestion = '如果你是小李，該如何運用非暴力溝通的「感受」說明自己情緒的狀況呢？';
-    }
+    const feelingQuestion = `如果你是${character.character_name}，該如何運用非暴力溝通的「感受」說明自己情緒的狀況呢？`;
 
     return (
         <div className="flex-1 bg-white p-6 rounded-3xl h-96 shadow-lg">
@@ -21,9 +15,9 @@ const FeelingInterface = ({ character, onBackClick, onNextClick, initialValue  }
                 <span className="text-gray-500">觀察</span>
                 <div className="flex-grow border-t-2 border-gray-300 mx-2"></div>
                 <span className="text-orange-500 font-extrabold">感受</span>
-                <div className="flex-grow border-t-2  border-gray-300 mx-2"></div>
+                <div className="flex-grow border-t-2 border-gray-300 mx-2"></div>
                 <span className="text-gray-500">需要</span>
-                <div className="flex-grow border-t-2  border-gray-300 mx-2"></div>
+                <div className="flex-grow border-t-2 border-gray-300 mx-2"></div>
                 <span className="text-gray-500">請求</span>
             </div>
             <p className="text-lg lg:text-xl font-semibold mb-4">
@@ -35,7 +29,7 @@ const FeelingInterface = ({ character, onBackClick, onNextClick, initialValue  }
                 value={feelingText}
                 onChange={(e) => setFeelingText(e.target.value)}
                 rows="4"
-                style={{resize: "none"}}
+                style={{ resize: "none" }}
             ></textarea>
             <div className="flex justify-between mt-6">
                 <button

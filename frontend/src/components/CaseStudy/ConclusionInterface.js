@@ -3,9 +3,8 @@ import React, { useState } from 'react';
 const ConclusionInterface = ({ previousAnswers, character, onBackClick, onSaveClick }) => {
     const [conclusionText, setConclusionText] = useState(previousAnswers.conclusion || '');
 
-    const conclusionQuestion = character === 'XiaoLi'
-        ? '請試著用剛剛學到的非暴力溝通技巧，想想看如果你是小李，你會如何向媽媽表達呢？'
-        : '請試著用剛剛學到的非暴力溝通技巧，想想看如果你是媽媽，你會如何向小李表達呢？';
+    // Use the character's name dynamically in the conclusion question
+    const conclusionQuestion = `請試著用剛剛學到的非暴力溝通技巧，想想看如果你是${character.character_name}，你會如何表達呢？`;
 
     return (
         <div className="flex flex-col lg:flex-row w-full max-w-6xl space-y-6 lg:space-y-0 lg:space-x-6">
@@ -18,42 +17,34 @@ const ConclusionInterface = ({ previousAnswers, character, onBackClick, onSaveCl
                             switch(previousAnswers.selectedEmotion) {
                                 case 1:
                                     return (
-                                        <>
-                                            <span className="inline-flex items-center">
-                                                <span className="text-2xl lg:text-3xl">😡</span>
-                                                <span className="text-lg lg:text-xl">失望的</span>
-                                            </span>
-                                        </>
+                                        <span className="inline-flex items-center">
+                                            <span className="text-2xl lg:text-3xl">😡</span>
+                                            <span className="text-lg lg:text-xl">失望的</span>
+                                        </span>
                                     );
                                 case 2:
                                     return (
-                                        <>
-                                            <span className="inline-flex items-center">
-                                                <span className="text-2xl lg:text-3xl">😔</span>
-                                                <span className="text-lg lg:text-xl">冤望的</span>
-                                            </span>
-                                        </>
+                                        <span className="inline-flex items-center">
+                                            <span className="text-2xl lg:text-3xl">😔</span>
+                                            <span className="text-lg lg:text-xl">冤望的</span>
+                                        </span>
                                     );
                                 case 3:
                                     return (
-                                        <>
-                                            <span className="inline-flex items-center">
-                                                <span className="text-2xl lg:text-3xl">😰</span>
-                                                <span className="text-lg lg:text-xl">焦急的</span>
-                                            </span>
-                                        </>
+                                        <span className="inline-flex items-center">
+                                            <span className="text-2xl lg:text-3xl">😰</span>
+                                            <span className="text-lg lg:text-xl">焦急的</span>
+                                        </span>
                                     );
                                 case 4:
                                     return (
-                                        <>
-                                            <span className="inline-flex items-center">
-                                                <span className="text-2xl lg:text-3xl">😭</span>
-                                                <span className="text-lg lg:text-xl">難過的</span>
-                                            </span>
-                                        </>
+                                        <span className="inline-flex items-center">
+                                            <span className="text-2xl lg:text-3xl">😭</span>
+                                            <span className="text-lg lg:text-xl">難過的</span>
+                                        </span>
                                     );
                                 default:
-                                    return null; // Or a default message if you want
+                                    return null;
                             }
                         })()}
                     </div>

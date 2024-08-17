@@ -7,13 +7,7 @@ const DemandInterface = ({ character, onBackClick, onNextClick, initialValue }) 
         setDemandText(initialValue || '');
     }, [initialValue]);
 
-    let demandQuestion = '';
-
-    if (character === 'Mother') {
-        demandQuestion = '如果你是媽媽，該如何運用非暴力溝通的「需要」說明自己情緒的狀況呢？';
-    } else if (character === 'XiaoLi') {
-        demandQuestion = '如果你是小李，該如何運用非暴力溝通的「需要」說明自己情緒的狀況呢？';
-    }
+    const demandQuestion = `如果你是${character.character_name}，該如何運用非暴力溝通的「需要」說明自己情緒的狀況呢？`;
 
     return (
         <div className="flex-1 bg-white p-6 rounded-3xl h-96 shadow-lg">
@@ -35,7 +29,7 @@ const DemandInterface = ({ character, onBackClick, onNextClick, initialValue }) 
                 value={demandText}
                 onChange={(e) => setDemandText(e.target.value)}
                 rows="4"
-                style={{resize: "none"}}
+                style={{ resize: "none" }}
             ></textarea>
             <div className="flex justify-between mt-6">
                 <button

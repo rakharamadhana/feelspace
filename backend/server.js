@@ -255,53 +255,23 @@ apiRouter.get('/cases/:id', verifyToken,(req, res) => {
     });
 });
 
-// Endpoint to save case details
-apiRouter.post('/cases/details/:id/save', verifyToken, (req, res) => {
-    const { case_id, emotion, observe, feeling, need, request, reasoning, conclusion } = req.body;
-    const created_by = req.user.id;
+// Endpoint to get characters for a specific case
+apiRouter.get('/cases/:id/characters', verifyToken, (req, res) => {
+    const caseId = req.params.id;
 
-    // First, check if an entry already exists
-    const checkQuery = `
-        SELECT id FROM case_details
-        WHERE case_id = ? AND created_by = ?
+    const query = `
+        SELECT id, character_name
+        FROM case_characters
+        WHERE case_id = ?
     `;
 
-    db.query(checkQuery, [case_id, created_by], (error, results) => {
+    db.query(query, [caseId], (error, results) => {
         if (error) {
-            console.error('Error checking case details:', error);
+            console.error('Error fetching characters:', error);
             return res.status(500).send('Server error');
         }
 
-        if (results.length > 0) {
-            // Update the existing entry
-            const updateQuery = `
-                UPDATE case_details
-                SET emotion = ?, observe = ?, feeling = ?, need = ?, request = ?, reasoning = ?, conclusion = ?
-                WHERE id = ?
-            `;
-
-            db.query(updateQuery, [emotion, observe, feeling, need, request, reasoning, conclusion, results[0].id], (error, results) => {
-                if (error) {
-                    console.error('Error updating case details:', error);
-                    return res.status(500).send('Server error');
-                }
-                res.status(200).send('Case details updated successfully');
-            });
-        } else {
-            // Insert a new entry
-            const insertQuery = `
-                INSERT INTO case_details (case_id, emotion, observe, feeling, need, request, reasoning, conclusion, created_by)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-            `;
-
-            db.query(insertQuery, [case_id, emotion, observe, feeling, need, request, reasoning, conclusion, created_by], (error, results) => {
-                if (error) {
-                    console.error('Error saving case details:', error);
-                    return res.status(500).send('Server error');
-                }
-                res.status(201).send('Case details saved successfully');
-            });
-        }
+        res.status(200).json(results);
     });
 });
 
@@ -324,6 +294,75 @@ apiRouter.get('/cases/details/:id', verifyToken, (req, res) => {
             res.status(200).json(results[0]); // Send the first result back
         } else {
             res.status(200).json(null); // No previous answers found
+        }
+    });
+});
+
+apiRouter.get('/cases/details/:id/:character_id', verifyToken, (req, res) => {
+    const { id, character_id } = req.params;
+    const created_by = req.user.id;
+
+    const query = `
+        SELECT * FROM case_details
+        WHERE case_id = ? AND character_id = ? AND created_by = ?
+    `;
+
+    db.query(query, [id, character_id, created_by], (error, results) => {
+        if (error) {
+            console.error('Error fetching case details:', error);
+            return res.status(500).send('Server error');
+        }
+
+        if (results.length > 0) {
+            res.status(200).json(results[0]);
+        } else {
+            res.status(200).json(null);  // Return null if no previous answers exist
+        }
+    });
+});
+
+apiRouter.post('/cases/details/:id/:character_id/save', verifyToken, (req, res) => {
+    const { id, character_id } = req.params;
+    const { emotion, observe, feeling, need, request, reasoning, conclusion } = req.body;
+    const created_by = req.user.id;
+
+    const checkQuery = `
+        SELECT id FROM case_details WHERE case_id = ? AND character_id = ? AND created_by = ?
+    `;
+
+    db.query(checkQuery, [id, character_id, created_by], (error, results) => {
+        if (error) {
+            console.error('Error checking existing record:', error);
+            return res.status(500).send('Server error');
+        }
+
+        if (results.length > 0) {
+            // Update existing record
+            const updateQuery = `
+                UPDATE case_details 
+                SET emotion = ?, observe = ?, feeling = ?, need = ?, request = ?, reasoning = ?, conclusion = ?, modified_at = CURRENT_TIMESTAMP
+                WHERE id = ?
+            `;
+            db.query(updateQuery, [emotion, observe, feeling, need, request, reasoning, conclusion, results[0].id], (updateError) => {
+                if (updateError) {
+                    console.error('Error updating case details:', updateError);
+                    return res.status(500).send('Server error');
+                }
+                res.status(200).send('Case details updated successfully');
+            });
+        } else {
+            // Insert new record
+            const insertQuery = `
+                INSERT INTO case_details (case_id, character_id, emotion, observe, feeling, need, request, reasoning, conclusion, created_by)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            `;
+            db.query(insertQuery, [id, character_id, emotion, observe, feeling, need, request, reasoning, conclusion, created_by], (insertError) => {
+                if (insertError) {
+                    console.error('Error inserting case details:', insertError);
+                    return res.status(500).send('Server error');
+                }
+                res.status(201).send('Case details saved successfully');
+            });
         }
     });
 });
