@@ -11,6 +11,7 @@ import StudentDashboard from './pages/StudentDashboard';
 import CaseStudy from './pages/CaseStudy'; // Import the CaseStudy component
 import CaseStudyDetail from './pages/CaseStudyDetail'; // Import the CaseStudy component
 import CardMaker from './pages/CardMaker'; // Import the CaseStudy component
+import CardMakerCreate from './pages/CardMakerCreate'; // Import the CaseStudy component
 import Profile from './pages/Profile';
 import ProtectedRoute from './components/ProtectedRoute';
 import UsersDatabase from './components/UsersDatabase'; // Import the UsersDatabase component
@@ -35,6 +36,7 @@ function App() {
                 <Route path="/case-study/detail/:id" element={<ProtectedRoute element={<CaseStudyDetail />} />} />
                 <Route path="/card-maker" element={<ProtectedRoute element={<CardMaker />} />} />
                 <Route path="/card-maker/draw" element={<ProtectedRoute element={<Draw />} />} />
+                <Route path="/card-maker/create" element={<ProtectedRoute element={<CardMakerCreate />} />} />
                 <Route path="/profile" element={<ProtectedRoute element={<Profile />} />} />
                 <Route path="/users-database" element={<ProtectedRoute element={<UsersDatabase />} />} />
                 <Route path="/roles-database" element={<ProtectedRoute  element={<RolesDatabase />} />} />

@@ -18,7 +18,7 @@ const CardMaker = () => {
                     <Card imageUrl={`${process.env.PUBLIC_URL}/assets/image.png`} text="AI工具"
                           borderColor="border-blue-300" textColor="text-blue-300" link="#" simple={true}/>
                     <Card imageUrl={`${process.env.PUBLIC_URL}/assets/image.png`} text="卡牌製作"
-                          borderColor="border-green-300" textColor="text-green-300" link="#" simple={true}/>
+                          borderColor="border-green-300" textColor="text-green-300" link="/card-maker/create" simple={true}/>
                 </div>
                 </FadeIn>
             </div>
