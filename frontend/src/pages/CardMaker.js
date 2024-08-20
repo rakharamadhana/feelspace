@@ -6,8 +6,6 @@ import FadeIn from "../components/FadeIn";
 const CardMaker = () => {
     const role = localStorage.getItem('role');
 
-    console.log(role)
-
     return (
         <div className="min-h-screen flex flex-col" style={{ backgroundColor: '#fff4e3' }}>
             <Navbar role={role} />
