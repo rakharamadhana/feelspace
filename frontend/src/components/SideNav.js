@@ -3,6 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Menu, Transition } from '@headlessui/react';
 import { ChevronUpIcon, ChevronDownIcon } from '@heroicons/react/20/solid';
 import ProfileModal from '../components/ProfileModal'; // Import the ProfileModal component
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faHome, faUsers, faUserShield, faFolderOpen, faComments } from '@fortawesome/free-solid-svg-icons';
 
 const SideNav = ({ role }) => {
     const navigate = useNavigate();
@@ -27,27 +29,35 @@ const SideNav = ({ role }) => {
                     <nav>
                         <ul>
                             <li className="mb-4">
-                                <Link to={dashboardPath} className="block p-2 hover:bg-gray-700 rounded">Dashboard</Link>
+                                <Link to={dashboardPath} className="block p-2 hover:bg-gray-700 rounded">
+                                    <FontAwesomeIcon icon={faHome} className="mr-2"/> Dashboard
+                                </Link>
                             </li>
                             {role === 'Admin' && (
                                 <>
                                     <li className="mb-4">
-                                        <Link to="/users-database" className="block p-2 hover:bg-gray-700 rounded">Users Database</Link>
+                                        <Link to="/manage-users" className="block p-2 hover:bg-gray-700 rounded">
+                                            <FontAwesomeIcon icon={faUsers} className="mr-2"/> Manage Users
+                                        </Link>
                                     </li>
                                     <li className="mb-4">
-                                        <Link to="/roles-database" className="block p-2 hover:bg-gray-700 rounded">Roles Database</Link>
+                                        <Link to="/manage-roles" className="block p-2 hover:bg-gray-700 rounded">
+                                            <FontAwesomeIcon icon={faUserShield} className="mr-2"/> Manage Roles
+                                        </Link>
                                     </li>
                                 </>
                             )}
                             {(role === 'Admin' || role === 'Teacher') && (
                                 <>
                                     <li className="mb-4">
-                                        <Link to="/cases-database" className="block p-2 hover:bg-gray-700 rounded">Cases
-                                            Management</Link>
+                                        <Link to="/manage-cases" className="block p-2 hover:bg-gray-700 rounded">
+                                            <FontAwesomeIcon icon={faFolderOpen} className="mr-2"/> Manage Cases
+                                        </Link>
                                     </li>
                                     <li className="mb-4">
-                                        <Link to="/cases-responses" className="block p-2 hover:bg-gray-700 rounded">Cases
-                                            Responses</Link>
+                                        <Link to="/cases-responses" className="block p-2 hover:bg-gray-700 rounded">
+                                            <FontAwesomeIcon icon={faComments} className="mr-2"/> Cases Responses
+                                        </Link>
                                     </li>
                                 </>
                             )}
@@ -56,15 +66,16 @@ const SideNav = ({ role }) => {
                 </div>
                 <div className="relative">
                     <Menu as="div">
-                        {({ open }) => (
+                        {({open}) => (
                             <>
                                 <div>
-                                    <Menu.Button className="flex items-center justify-between w-full p-2 text-left hover:bg-gray-700 rounded">
+                                    <Menu.Button
+                                        className="flex items-center justify-between w-full p-2 text-left hover:bg-gray-700 rounded">
                                         <span>{name}</span>
                                         {open ? (
-                                            <ChevronDownIcon className="w-5 h-5 ml-2" />
+                                            <ChevronDownIcon className="w-5 h-5 ml-2"/>
                                         ) : (
-                                            <ChevronUpIcon className="w-5 h-5 ml-2" />
+                                            <ChevronUpIcon className="w-5 h-5 ml-2"/>
                                         )}
                                     </Menu.Button>
                                 </div>
@@ -77,10 +88,11 @@ const SideNav = ({ role }) => {
                                     leaveFrom="transform opacity-100 scale-100"
                                     leaveTo="transform opacity-0 scale-95"
                                 >
-                                    <Menu.Items className="absolute bottom-12 left-0 w-full mt-2 origin-bottom-left bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                                    <Menu.Items
+                                        className="absolute bottom-12 left-0 w-full mt-2 origin-bottom-left bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                                         <div className="py-1">
                                             <Menu.Item>
-                                                {({ active }) => (
+                                                {({active}) => (
                                                     <button
                                                         onClick={() => setIsProfileOpen(true)} // Open the modal on click
                                                         className={`${

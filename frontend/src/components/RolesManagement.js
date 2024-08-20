@@ -3,7 +3,7 @@ import api from '../api';  // Import the api instance
 import SideNav from '../components/SideNav';
 import DataTable from 'react-data-table-component'; // Import DataTable
 
-const RolesDatabase = () => {
+const RolesManagement = () => {
     const [roles, setRoles] = useState([]);
     const [newRoleName, setNewRoleName] = useState(''); // State for new role input
     const [message, setMessage] = useState(''); // State for success/error messages
@@ -68,7 +68,7 @@ const RolesDatabase = () => {
         <div className="min-h-screen flex">
             <SideNav role={role} />
             <div className="flex-grow p-10 flex flex-col items-start" style={{ backgroundColor: '#fff4e3' }}>
-                <h1 className="text-3xl font-bold mb-6">Roles Database</h1>
+                <h1 className="text-3xl font-bold mb-6">Manage Roles</h1>
 
                 {/* Role creation form */}
                 <form onSubmit={handleCreateRole} className="mb-4 w-full max-w-md">
@@ -78,12 +78,12 @@ const RolesDatabase = () => {
                             value={newRoleName}
                             onChange={(e) => setNewRoleName(e.target.value)}
                             placeholder="Enter new role name"
-                            className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full p-3 border rounded-full focus:outline-none focus:ring-2 focus:ring-orange-500"
                             required
                         />
                         <button
                             type="submit"
-                            className="ml-4 bg-blue-500 text-white py-2 px-4 rounded-lg"
+                            className="ml-4 w-[10rem] h-[3rem] bg-orange-500 text-white py-2 px-4 rounded-full"
                         >
                             Add Role
                         </button>
@@ -106,4 +106,4 @@ const RolesDatabase = () => {
     );
 };
 
-export default RolesDatabase;
+export default RolesManagement;

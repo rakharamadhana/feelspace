@@ -2,11 +2,12 @@ import React, { useEffect, useState } from 'react';
 import api from '../api'; // Import the api instance
 import SideNav from '../components/SideNav';
 import Modal from 'react-modal'; // Import Modal from react-modal
-import DataTable from 'react-data-table-component'; // Import DataTable
+import DataTable from 'react-data-table-component';
+import FadeIn from "./FadeIn"; // Import DataTable
 
 Modal.setAppElement('#root'); // Set the app element
 
-const UsersDatabase = () => {
+const UsersManagement = () => {
     const [users, setUsers] = useState([]);
     const [roles, setRoles] = useState([]); // State to hold roles
     const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -152,13 +153,13 @@ const UsersDatabase = () => {
         <div className="min-h-screen flex">
             <SideNav role={role} />
             <div className="flex-grow p-10 flex flex-col items-start" style={{ backgroundColor: '#fff4e3' }}>
-                <h1 className="text-3xl font-bold mb-6">Users Database</h1>
+                <h1 className="text-3xl font-bold mb-6">Manage Roles</h1>
                 <div className="mb-4">
                     <label className="block text-sm font-bold mb-2">Filter by Role</label>
                     <select
                         value={selectedRole}
                         onChange={(e) => setSelectedRole(e.target.value)}
-                        className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
                     >
                         <option value="">All Roles</option>
                         {roles.map((role) => (
@@ -166,7 +167,7 @@ const UsersDatabase = () => {
                         ))}
                     </select>
                 </div>
-                <button onClick={() => openModal()} className="mb-4 bg-blue-500 text-white py-2 px-4 rounded">Add New User</button>
+                <button onClick={() => openModal()} className="mb-4 bg-orange-500 text-white py-2 px-4 rounded-full">Add New User</button>
                 <div className="w-full">
                     <DataTable
                         columns={columns}
@@ -182,9 +183,10 @@ const UsersDatabase = () => {
                 isOpen={modalIsOpen}
                 onRequestClose={closeModal}
                 contentLabel="User Modal"
-                className="flex items-center justify-center"
-                overlayClassName="fixed inset-0 bg-black bg-opacity-50"
+                className="flex items-center justify-center min-h-screen" // Ensure the content is centered
+                overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center" // Center the content vertically and horizontally
             >
+                <FadeIn>
                 <div className="bg-white p-6 rounded shadow-lg w-96">
                     <h2 className="text-2xl font-bold mb-4">{isEditing ? 'Edit User' : 'Add New User'}</h2>
                     <form onSubmit={handleSubmit}>
@@ -240,9 +242,10 @@ const UsersDatabase = () => {
                         </div>
                     </form>
                 </div>
+                </FadeIn>
             </Modal>
         </div>
     );
 };
 
-export default UsersDatabase;
+export default UsersManagement;

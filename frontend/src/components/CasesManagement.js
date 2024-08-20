@@ -2,11 +2,12 @@ import React, { useEffect, useState } from 'react';
 import api from '../api';  // Import the api instance
 import SideNav from '../components/SideNav';
 import DataTable from 'react-data-table-component'; // Import DataTable
-import Modal from 'react-modal'; // Import Modal
+import Modal from 'react-modal';
+import FadeIn from "./FadeIn"; // Import Modal
 
 Modal.setAppElement('#root'); // Set the app element for accessibility
 
-const CasesDatabase = () => {
+const CasesManagement = () => {
     const [cases, setCases] = useState([]);
     const [newCase, setNewCase] = useState({ title: '', borderColor: '', textColor: '', story: '' }); // State for new case input
     const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -115,10 +116,11 @@ const CasesDatabase = () => {
         },
         {
             name: 'Story',
-            selector: row => row.story,
+            selector: row => row.story.length > 20 ? `${row.story.substring(0, 20)}...` : row.story,
             sortable: true,
-            center: true,
-            wrap: true, // Allow text wrapping if needed
+            style: {
+                justifyContent: 'center', // Center the content in the column
+            },
         },
         {
             name: 'Actions',
@@ -135,13 +137,13 @@ const CasesDatabase = () => {
     return (
         <div className="min-h-screen flex">
             <SideNav role={role} />
-            <div className="flex-grow p-10 flex flex-col items-center" style={{ backgroundColor: '#fff4e3' }}>
-                <h1 className="text-3xl font-bold mb-6">Cases Database</h1>
+            <div className="flex-grow p-10 flex flex-col items-start" style={{ backgroundColor: '#fff4e3' }}>
+                <h1 className="text-3xl font-bold mb-6">Manage Cases</h1>
 
                 {/* Case creation form */}
-                <button onClick={() => openModal()} className="mb-4 bg-blue-500 text-white py-2 px-4 rounded">Add New Case</button>
+                <button onClick={() => openModal()} className="mb-4 bg-orange-500 text-white py-2 px-4 rounded-full">Add New Case</button>
 
-                <div className="w-full max-w-5xl"> {/* Restrict the width to fit well with the SideNav */}
+                <div className="w-full max-w-8xl"> {/* Restrict the width to fit well with the SideNav */}
                     <DataTable
                         columns={columns}
                         data={cases}
@@ -168,10 +170,11 @@ const CasesDatabase = () => {
             <Modal
                 isOpen={modalIsOpen}
                 onRequestClose={closeModal}
-                contentLabel="Case Modal"
-                className="flex items-center justify-center"
-                overlayClassName="fixed inset-0 bg-black bg-opacity-50"
+                contentLabel="User Modal"
+                className="flex items-center justify-center min-h-screen" // Ensure the content is centered
+                overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center" // Center the content vertically and horizontally
             >
+                <FadeIn>
                 <div className="bg-white p-6 rounded shadow-lg w-96">
                     <h2 className="text-2xl font-bold mb-4">{isEditing ? 'Edit Case' : 'Add New Case'}</h2>
                     <form onSubmit={handleCreateOrUpdateCase}>
@@ -221,9 +224,10 @@ const CasesDatabase = () => {
                         </div>
                     </form>
                 </div>
+                </FadeIn>
             </Modal>
         </div>
     );
 };
 
-export default CasesDatabase;
+export default CasesManagement;

@@ -127,6 +127,14 @@ const CasesResponse = () => {
             width: '150px',
         },
         {
+            name: 'Student Name',
+            selector: row => row.created_by_name, // Display the user's name
+            sortable: true,
+            style: {
+                justifyContent: 'center', // Center the content in the column
+            },
+        },
+        {
             name: 'Emotion',
             selector: row => {
                 const emotions = ['Angry', 'Resentful', 'Anxious', 'Sad'];
@@ -140,7 +148,7 @@ const CasesResponse = () => {
         },
         {
             name: 'Reasoning',
-            selector: row => row.reasoning,
+            selector: row => row.reasoning.length > 10 ? `${row.reasoning.substring(0, 10)}...` : row.reasoning,
             sortable: true,
             style: {
                 justifyContent: 'center', // Center the content in the column
@@ -149,7 +157,7 @@ const CasesResponse = () => {
         },
         {
             name: 'Observe',
-            selector: row => row.observe,
+            selector: row => row.observe.length > 10 ? `${row.observe.substring(0, 10)}...` : row.observe,
             sortable: true,
             style: {
                 justifyContent: 'center', // Center the content in the column
@@ -158,7 +166,7 @@ const CasesResponse = () => {
         },
         {
             name: 'Feeling',
-            selector: row => row.feeling,
+            selector: row => row.feeling.length > 10 ? `${row.feeling.substring(0, 10)}...` : row.feeling,
             sortable: true,
             style: {
                 justifyContent: 'center', // Center the content in the column
@@ -167,7 +175,7 @@ const CasesResponse = () => {
         },
         {
             name: 'Need',
-            selector: row => row.need,
+            selector: row => row.need.length > 10 ? `${row.need.substring(0, 10)}...` : row.need,
             sortable: true,
             style: {
                 justifyContent: 'center', // Center the content in the column
@@ -176,7 +184,7 @@ const CasesResponse = () => {
         },
         {
             name: 'Request',
-            selector: row => row.request,
+            selector: row => row.request > 10 ? `${row.request.substring(0, 10)}...` : row.request,
             sortable: true,
             style: {
                 justifyContent: 'center', // Center the content in the column
@@ -185,20 +193,12 @@ const CasesResponse = () => {
         },
         {
             name: 'Conclusion',
-            selector: row => row.conclusion,
+            selector: row => row.conclusion > 10 ? `${row.conclusion.substring(0, 10)}...` : row.conclusion,
             sortable: true,
             style: {
                 justifyContent: 'center', // Center the content in the column
             },
             wrap: true,
-        },
-        {
-            name: 'Submitted By',
-            selector: row => row.created_by_name, // Display the user's name
-            sortable: true,
-            style: {
-                justifyContent: 'center', // Center the content in the column
-            },
         },
         {
             name: 'Created At',
@@ -214,15 +214,15 @@ const CasesResponse = () => {
     return (
         <div className="min-h-screen flex">
             <SideNav role={role} />
-            <div className="flex-grow p-10 flex flex-col items-center" style={{ backgroundColor: '#fff4e3' }}>
-                <h1 className="text-3xl font-bold mb-6">All Case Responses</h1>
+            <div className="flex-grow p-10 flex flex-col items-start" style={{ backgroundColor: '#fff4e3' }}>
+                <h1 className="text-3xl font-bold mb-6">Cases Responses</h1>
                 {/* Filter Inputs */}
                 <div className="mb-4 flex space-x-4">
                     {/* Case ID Filter */}
                     <select
                         value={caseIdFilter}
                         onChange={handleCaseChange}
-                        className="p-2 border rounded"
+                        className="p-2 border rounded-2xl"
                     >
                         <option value="">Filter by Case ID</option>
                         {caseIdOptions.map(option => (
@@ -235,7 +235,7 @@ const CasesResponse = () => {
                     <select
                         value={characterIdFilter}
                         onChange={handleCharacterChange}
-                        className="p-2 border rounded"
+                        className="p-2 border rounded-2xl"
                     >
                         <option value="">Filter by Character Name</option>
                         {characterOptions.map(option => (
@@ -248,7 +248,7 @@ const CasesResponse = () => {
                     <select
                         value={submittedByFilter}
                         onChange={(e) => setSubmittedByFilter(e.target.value)}
-                        className="p-2 border rounded"
+                        className="p-2 border rounded-2xl"
                     >
                         <option value="">Filter by Submitted By</option>
                         {userOptions.map(option => (
@@ -259,12 +259,12 @@ const CasesResponse = () => {
                     </select>
                     <button
                         onClick={handleFilter}
-                        className="bg-blue-500 text-white py-2 px-4 rounded"
+                        className="bg-orange-500 text-white py-2 px-4 rounded-full"
                     >
-                        Apply Filters
+                        Filter
                     </button>
                 </div>
-                <div className="w-full max-w-7xl">
+                <div className="w-full max-w-8xl">
                     <DataTable
                         columns={columns}
                         data={filteredResponses} // Use filtered responses

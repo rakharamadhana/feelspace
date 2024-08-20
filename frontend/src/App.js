@@ -14,9 +14,9 @@ import CardMaker from './pages/CardMaker'; // Import the CaseStudy component
 import CardMakerCreate from './pages/CardMakerCreate'; // Import the CaseStudy component
 import Profile from './pages/Profile';
 import ProtectedRoute from './components/ProtectedRoute';
-import UsersDatabase from './components/UsersDatabase'; // Import the UsersDatabase component
-import RolesDatabase from './components/RolesDatabase';
-import CasesDatabase from './components/CasesDatabase'; // Import the CasesDatabase component
+import UsersManagement from './components/UsersManagement'; // Import the UsersManagement component
+import RolesManagement from './components/RolesManagement';
+import CasesManagement from './components/CasesManagement'; // Import the CasesManagement component
 import CaseDetailsResponse from './pages/CaseDetailsResponse'; // Import the CaseDetailsResponse component
 import CasesResponse from './pages/CasesResponse'; // Import the AllResponses component
 import Draw from "./pages/Draw";
@@ -37,9 +37,9 @@ function App() {
                 {/*Backend*/}
                 <Route path="/admin-dashboard" element={<ProtectedRoute element={<AdminDashboard />} />} />
                 <Route path="/teacher-dashboard" element={<ProtectedRoute element={<TeacherDashboard />} />} />
-                <Route path="/users-database" element={<ProtectedRoute element={<UsersDatabase />} />} />
-                <Route path="/roles-database" element={<ProtectedRoute element={<RolesDatabase />} />} />
-                <Route path="/cases-database" element={<ProtectedRoute element={<CasesDatabase />} />} />
+                <Route path="/manage-users" element={<ProtectedRoute element={<UsersManagement />} />} />
+                <Route path="/manage-roles" element={<ProtectedRoute element={<RolesManagement />} />} />
+                <Route path="/manage-cases" element={<ProtectedRoute element={<CasesManagement />} />} />
                 <Route path="/cases-responses" element={<ProtectedRoute element={<CasesResponse />} />} /> {/* New Route */}
                 <Route path="/case-details/:id/responses" element={<ProtectedRoute element={<CaseDetailsResponse />} />} />
 
