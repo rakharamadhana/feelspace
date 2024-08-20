@@ -264,7 +264,7 @@ const CasesResponse = () => {
                         Filter
                     </button>
                 </div>
-                <div className="w-full max-w-8xl">
+                <div className="w-full max-w-[50rem] xl:max-w-[100rem]">
                     <DataTable
                         columns={columns}
                         data={filteredResponses} // Use filtered responses
