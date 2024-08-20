@@ -32,12 +32,14 @@ const StudentDashboard = () => {
                             bgColor="bg-blue-300"
                             textColor="text-white"
                             link="https://playingcards.io/aqwqfg"
+                            target="_blank"  // This will make the link open in a new tab
                             className={`${
                                 isTouched ? 'scale-95' : 'hover:scale-110'
                             } transition transform duration-300 ease-in-out`}
                             onTouchStart={() => setIsTouched(true)}
                             onTouchEnd={() => setIsTouched(false)}
                         />
+
                         <Card
                             imageUrl={`${process.env.PUBLIC_URL}/assets/menu-3.png`}
                             text="卡牌創作"

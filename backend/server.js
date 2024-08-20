@@ -201,6 +201,21 @@ apiRouter.post('/register', (req, res) => {
     });
 });
 
+apiRouter.get('/users/options', verifyToken, (req, res) => {
+    const query = `
+        SELECT id, name
+        FROM users
+    `;
+    db.query(query, (err, results) => {
+        if (err) {
+            console.error('Error fetching user options:', err);
+            return res.status(500).send('Server error');
+        }
+        res.status(200).json(results);
+    });
+});
+
+
 apiRouter.put('/users/:id', verifyToken, (req, res) => {
     if (req.user.role !== 'Admin') {
         return res.status(403).send('Access forbidden: admins only');
@@ -302,14 +317,102 @@ apiRouter.get('/roles', verifyToken, (req, res) => {
     });
 });
 
+apiRouter.post('/roles', verifyToken, (req, res) => {
+    // Only allow admins to create roles
+    if (req.user.role !== 'Admin') {
+        return res.status(403).send('Access forbidden: admins only');
+    }
+
+    // Extract the role name from the request body
+    const { role_name } = req.body;
+
+    // Simple validation: Check if role_name is provided
+    if (!role_name) {
+        return res.status(400).send('Role name is required');
+    }
+
+    // SQL query to insert the new role
+    const query = `
+        INSERT INTO roles (role_name) 
+        VALUES (?)
+    `;
+
+    // Execute the query
+    db.query(query, [role_name], (err, results) => {
+        if (err) {
+            return res.status(500).send(err);
+        }
+        res.status(201).json({ message: 'Role created successfully', roleId: results.insertId });
+    });
+});
+
 apiRouter.get('/cases', verifyToken,(req, res) => {
-    const query = 'SELECT id, title, borderColor, textColor FROM cases';
+    const query = 'SELECT id, title, borderColor, textColor, story FROM cases';
     db.query(query, (error, results) => {
         if (error) {
             console.error('Error fetching case studies:', error);
             return res.status(500).send('Server error');
         }
         res.json(results);
+    });
+});
+
+apiRouter.post('/cases', verifyToken, (req, res) => {
+    const { title, borderColor, textColor, story } = req.body;
+
+    if (req.user.role !== 'Admin') {
+        return res.status(403).send('Access forbidden: admins only');
+    }
+
+    const query = `
+        INSERT INTO cases (title, borderColor, textColor, story)
+        VALUES (?, ?, ?, ?)
+    `;
+
+    db.query(query, [title, borderColor, textColor, story], (error, results) => {
+        if (error) {
+            console.error('Error inserting case:', error);
+            return res.status(500).send('Server error');
+        }
+        res.status(201).json({ message: 'Case created successfully', caseId: results.insertId });
+    });
+});
+
+apiRouter.get('/cases/options', verifyToken, (req, res) => {
+    const query = `
+        SELECT id, title AS name
+        FROM cases
+    `;
+    db.query(query, (err, results) => {
+        if (err) {
+            console.error('Error fetching case options:', err);
+            return res.status(500).send('Server error');
+        }
+        res.status(200).json(results);
+    });
+});
+
+
+apiRouter.put('/cases/:id', verifyToken, (req, res) => {
+    const { id } = req.params;
+    const { title, borderColor, textColor, story } = req.body;
+
+    if (req.user.role !== 'Admin') {
+        return res.status(403).send('Access forbidden: admins only');
+    }
+
+    const query = `
+        UPDATE cases
+        SET title = ?, borderColor = ?, textColor = ?, story = ?
+        WHERE id = ?
+    `;
+
+    db.query(query, [title, borderColor, textColor, story, id], (error, results) => {
+        if (error) {
+            console.error('Error updating case:', error);
+            return res.status(500).send('Server error');
+        }
+        res.status(200).json({ message: 'Case updated successfully' });
     });
 });
 
@@ -346,6 +449,97 @@ apiRouter.get('/cases/:id/characters', verifyToken, (req, res) => {
         }
 
         res.status(200).json(results);
+    });
+});
+
+apiRouter.get('/cases/:caseId/characters/options', verifyToken, (req, res) => {
+    const { caseId } = req.params;
+
+    const query = `
+        SELECT id, character_name as name
+        FROM case_characters
+        WHERE case_id = ?
+    `;
+
+    db.query(query, [caseId], (error, results) => {
+        if (error) {
+            console.error('Error fetching characters for case:', error);
+            return res.status(500).send('Server error');
+        }
+        res.status(200).json(results);
+    });
+});
+
+apiRouter.get('/cases/:caseId/characters/:characterId/users/options', verifyToken, (req, res) => {
+    const { caseId, characterId } = req.params;
+
+    const query = `
+        SELECT DISTINCT u.id, u.name 
+        FROM case_details cd
+        JOIN users u ON cd.created_by = u.id
+        WHERE cd.case_id = ? AND cd.character_id = ?
+    `;
+
+    db.query(query, [caseId, characterId], (error, results) => {
+        if (error) {
+            console.error('Error fetching users for case and character:', error);
+            return res.status(500).send('Server error');
+        }
+        res.status(200).json(results);
+    });
+});
+
+apiRouter.get('/cases/details/all', verifyToken, (req, res) => {
+    // Only allow Admins and Teachers to access all responses
+    if (req.user.role !== 'Admin' && req.user.role !== 'Teacher') {
+        return res.status(403).send('Access forbidden: admins and teachers only');
+    }
+
+    const query = `
+        SELECT
+            case_details.*,
+            users.name AS created_by_name,
+            case_characters.character_name
+        FROM
+            case_details
+                JOIN
+            users ON case_details.created_by = users.id
+                JOIN
+            case_characters ON case_details.character_id = case_characters.id
+    `;
+
+    db.query(query, (error, results) => {
+        if (error) {
+            console.error('Error fetching case details:', error);
+            return res.status(500).send('Server error');
+        }
+        res.status(200).json(results);
+    });
+});
+
+apiRouter.get('/cases/details/all/:id', verifyToken, (req, res) => {
+    const { id } = req.params; // id is case_id
+    const { role } = req.user;
+
+    // Only Admins and Teachers can access this data
+    if (role !== 'Admin' && role !== 'Teacher') {
+        return res.status(403).send('Access forbidden: Admins and Teachers only');
+    }
+
+    const query = `
+        SELECT cd.id, cd.case_id, cd.character_id, cd.emotion, cd.reasoning, cd.observe, 
+               cd.feeling, cd.need, cd.request, cd.conclusion, cd.created_at, u.name as created_by
+        FROM case_details cd
+        JOIN users u ON cd.created_by = u.id
+        WHERE cd.case_id = ?
+    `;
+
+    db.query(query, [id], (err, results) => {
+        if (err) {
+            console.error('Error fetching case details:', err);
+            return res.status(500).send('Server error');
+        }
+        res.json(results);
     });
 });
 

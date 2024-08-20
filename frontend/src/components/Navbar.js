@@ -1,11 +1,11 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 import { Fragment } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHome, faUser } from '@fortawesome/free-solid-svg-icons';
-
+import ProfileModal from '../components/ProfileModal'; // Import your Profile component as a modal
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ');
@@ -17,9 +17,16 @@ const Navbar = () => {
     const role = localStorage.getItem('role');
     const userName = localStorage.getItem('name');
     const [isTouched, setIsTouched] = useState(false);
+    const [isProfileOpen, setIsProfileOpen] = useState(false); // State to control modal visibility
+
+    const studentRole = role.toLowerCase().includes('student') ? 'student' : role.toLowerCase();
 
     const navigation = [
-        { name: 'Home', href: `/${role.toLowerCase()}-dashboard`, current: location.pathname === `/${role.toLowerCase()}-dashboard` },
+        {
+            name: 'Home',
+            href: `/${studentRole}-dashboard`,
+            current: location.pathname === `/${studentRole}-dashboard`
+        },
     ];
 
     const handleLogout = () => {
@@ -107,16 +114,16 @@ const Navbar = () => {
                                         <Menu.Items
                                             className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                                             <Menu.Item>
-                                            {({ active }) => (
-                                                    <Link
-                                                        to="/profile"
+                                                {({ active }) => (
+                                                    <button
+                                                        onClick={() => setIsProfileOpen(true)} // Open the modal on click
                                                         className={classNames(
                                                             active ? 'bg-gray-100' : '',
-                                                            'block px-4 py-2 text-sm text-gray-700'
+                                                            'block w-full text-left px-4 py-2 text-sm text-gray-700'
                                                         )}
                                                     >
                                                         Profile
-                                                    </Link>
+                                                    </button>
                                                 )}
                                             </Menu.Item>
                                             <Menu.Item>
@@ -157,6 +164,11 @@ const Navbar = () => {
                             ))}
                         </div>
                     </Disclosure.Panel>
+
+                    {/* Profile Modal */}
+                    {isProfileOpen && (
+                        <ProfileModal onClose={() => setIsProfileOpen(false)} />
+                    )}
                 </>
             )}
         </Disclosure>

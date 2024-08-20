@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../api'; // Import the api instance
 import SideNav from '../components/SideNav';
-import Modal from 'react-modal';
+import Modal from 'react-modal'; // Import Modal from react-modal
+import DataTable from 'react-data-table-component'; // Import DataTable
+
+Modal.setAppElement('#root'); // Set the app element
 
 const UsersDatabase = () => {
     const [users, setUsers] = useState([]);
+    const [roles, setRoles] = useState([]); // State to hold roles
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const [currentUser, setCurrentUser] = useState({});
@@ -12,15 +16,17 @@ const UsersDatabase = () => {
     const [email, setEmail] = useState('');
     const [userRole, setUserRole] = useState('');
     const [password, setPassword] = useState('');
+    const [selectedRole, setSelectedRole] = useState(''); // State for filtering users by role
     const role = localStorage.getItem('role');
     const token = localStorage.getItem('token');
 
     useEffect(() => {
         fetchUsers();
+        fetchRoles(); // Fetch roles when the component mounts
     }, [token]);
 
     const fetchUsers = () => {
-        axios.get('http://localhost:3001/users', {
+        api.get('/users', {
             headers: {
                 Authorization: `Bearer ${token}`
             }
@@ -30,6 +36,20 @@ const UsersDatabase = () => {
             })
             .catch(error => {
                 console.error('There was an error fetching the users!', error);
+            });
+    };
+
+    const fetchRoles = () => {
+        api.get('/roles', {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+            .then(response => {
+                setRoles(response.data); // Set roles from the API response
+            })
+            .catch(error => {
+                console.error('There was an error fetching the roles!', error);
             });
     };
 
@@ -57,7 +77,7 @@ const UsersDatabase = () => {
         const userData = { name, email, role: userRole, password };
 
         if (isEditing) {
-            axios.put(`http://localhost:3001/users/${currentUser.id}`, userData, {
+            api.put(`/users/${currentUser.id}`, userData, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -70,7 +90,7 @@ const UsersDatabase = () => {
                     console.error('There was an error updating the user!', error);
                 });
         } else {
-            axios.post('http://localhost:3001/register', userData, {
+            api.post('/register', userData, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -85,37 +105,76 @@ const UsersDatabase = () => {
         }
     };
 
+    // Filter users based on the selected role
+    const filteredUsers = selectedRole
+        ? users.filter(user => user.role_name === selectedRole)
+        : users;
+
+    // Define columns for DataTable
+    const columns = [
+        {
+            name: 'ID',
+            selector: row => row.id,
+            sortable: true,
+            center: true,
+        },
+        {
+            name: 'Name',
+            selector: row => row.name,
+            sortable: true,
+            center: true,
+        },
+        {
+            name: 'Email',
+            selector: row => row.email,
+            sortable: true,
+            center: true,
+        },
+        {
+            name: 'Role',
+            selector: row => row.role_name,
+            sortable: true,
+            center: true,
+        },
+        {
+            name: 'Actions',
+            cell: row => (
+                <button onClick={() => openModal(row)} className="mr-2 bg-yellow-500 text-white py-1 px-2 rounded">Edit</button>
+            ),
+            ignoreRowClick: true,
+            allowOverflow: true,
+            button: true,
+            center: true,
+        },
+    ];
+
     return (
         <div className="min-h-screen flex">
             <SideNav role={role} />
-            <div className="flex-grow p-10 flex flex-col items-center" style={{ backgroundColor: '#fff4e3' }}>
+            <div className="flex-grow p-10 flex flex-col items-start" style={{ backgroundColor: '#fff4e3' }}>
                 <h1 className="text-3xl font-bold mb-6">Users Database</h1>
-                <button onClick={() => openModal()} className="mb-4 bg-blue-500 text-white py-2 px-4 rounded">Add New User</button>
-                <div className="overflow-x-auto w-full">
-                    <table className="min-w-full bg-white mx-auto">
-                        <thead>
-                        <tr>
-                            <th className="py-2 px-4 border-b border-gray-300">ID</th>
-                            <th className="py-2 px-4 border-b border-gray-300">Name</th>
-                            <th className="py-2 px-4 border-b border-gray-300">Email</th>
-                            <th className="py-2 px-4 border-b border-gray-300">Role</th>
-                            <th className="py-2 px-4 border-b border-gray-300">Actions</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {users.map((user) => (
-                            <tr key={user.id}>
-                                <td className="py-2 px-4 border-b border-gray-300 text-center">{user.id}</td>
-                                <td className="py-2 px-4 border-b border-gray-300 text-center">{user.name}</td>
-                                <td className="py-2 px-4 border-b border-gray-300 text-center">{user.email}</td>
-                                <td className="py-2 px-4 border-b border-gray-300 text-center">{user.role_name}</td>
-                                <td className="py-2 px-4 border-b border-gray-300 text-center">
-                                    <button onClick={() => openModal(user)} className="mr-2 bg-yellow-500 text-white py-1 px-2 rounded">Edit</button>
-                                </td>
-                            </tr>
+                <div className="mb-4">
+                    <label className="block text-sm font-bold mb-2">Filter by Role</label>
+                    <select
+                        value={selectedRole}
+                        onChange={(e) => setSelectedRole(e.target.value)}
+                        className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                        <option value="">All Roles</option>
+                        {roles.map((role) => (
+                            <option key={role.id} value={role.role_name}>{role.role_name}</option>
                         ))}
-                        </tbody>
-                    </table>
+                    </select>
+                </div>
+                <button onClick={() => openModal()} className="mb-4 bg-blue-500 text-white py-2 px-4 rounded">Add New User</button>
+                <div className="w-full">
+                    <DataTable
+                        columns={columns}
+                        data={filteredUsers} // Pass filtered users to DataTable
+                        pagination
+                        highlightOnHover
+                        pointerOnHover
+                    />
                 </div>
             </div>
 
@@ -151,13 +210,17 @@ const UsersDatabase = () => {
                         </div>
                         <div className="mb-4">
                             <label className="block text-sm font-bold mb-2">Role</label>
-                            <input
-                                type="text"
+                            <select
                                 value={userRole}
                                 onChange={(e) => setUserRole(e.target.value)}
                                 className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 required
-                            />
+                            >
+                                <option value="">Select a role</option>
+                                {roles.map((role) => (
+                                    <option key={role.id} value={role.role_name}>{role.role_name}</option>
+                                ))}
+                            </select>
                         </div>
                         {!isEditing && (
                             <div className="mb-4">
