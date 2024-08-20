@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {Link, useNavigate} from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import FadeIn from '../components/FadeIn';
@@ -31,7 +31,8 @@ const Login = () => {
         }
     }, [navigate]);
 
-    const handleLogin = () => {
+    const handleLogin = (event) => {
+        event.preventDefault(); // Prevent default form submission
         api.post('/login', { email, password })
             .then(response => {
                 localStorage.setItem('token', response.data.token);
@@ -56,12 +57,6 @@ const Login = () => {
                 }
                 setError('An error occurred. Please try again later.');
             });
-    };
-
-    const handleKeyDown = (event) => {
-        if (event.key === 'Enter') {
-            handleLogin();
-        }
     };
 
     return (
@@ -92,42 +87,46 @@ const Login = () => {
                         <div className="bg-white p-8 lg:p-10 xl:p-12 rounded-lg shadow-lg w-full max-w-md">
                             <h1 className="text-2xl lg:text-3xl xl:text-3xl font-bold mb-8 text-gray-800">歡迎！登入你的帳號</h1>
                             {error && <p className="text-red-500 mb-4">{error}</p>}
-                            <input
-                                type="email"
-                                placeholder="Email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                onKeyDown={handleKeyDown}
-                                className="w-full mt-2 p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
-                            />
-                            <div className="relative w-full mt-4">
+                            <form onSubmit={handleLogin}>
                                 <input
-                                    type={showPassword ? "text" : "password"}
-                                    placeholder="Password"
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    onKeyDown={handleKeyDown}
-                                    className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                                    type="email"
+                                    placeholder="Email"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    className="w-full mt-2 p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                                    required
+                                    autoComplete="email" // Add autocomplete for email
                                 />
-                                <span
-                                    className="absolute right-3 top-3 text-gray-500 cursor-pointer"
-                                    onClick={() => setShowPassword(!showPassword)}
-                                >
-                                    <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
-                                </span>
-                            </div>
-                            <div className="flex items-center justify-between mt-4">
-                                <label className="flex items-center text-gray-600">
-                                    <input type="checkbox" className="form-checkbox h-4 w-4 text-orange-500"/>
-                                    <span className="ml-2">記得我</span>
-                                </label>
-                                <a href="#" className="text-sm text-blue-500 hover:underline">忘記密碼了嗎？</a>
-                            </div>
-                            <button onClick={handleLogin}
+                                <div className="relative w-full mt-4">
+                                    <input
+                                        type={showPassword ? "text" : "password"}
+                                        placeholder="Password"
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
+                                        className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                                        required
+                                        autoComplete="current-password" // Add autocomplete for password
+                                    />
+                                    <span
+                                        className="absolute right-3 top-3 text-gray-500 cursor-pointer"
+                                        onClick={() => setShowPassword(!showPassword)}
+                                    >
+                                        <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
+                                    </span>
+                                </div>
+                                <div className="flex items-center justify-between mt-4">
+                                    <label className="flex items-center text-gray-600">
+                                        <input type="checkbox" className="form-checkbox h-4 w-4 text-orange-500"/>
+                                        <span className="ml-2">記得我</span>
+                                    </label>
+                                    <a href="#" className="text-sm text-blue-500 hover:underline">忘記密碼了嗎？</a>
+                                </div>
+                                <button
+                                    type="submit"
                                     className="w-full mt-6 bg-orange-500 text-white font-bold py-3 px-6 rounded-lg shadow-lg hover:bg-orange-700 hover:scale-110 active:scale-95 transition duration-300 ease-in-out">
-                                登入
-                            </button>
-                            
+                                    登入
+                                </button>
+                            </form>
                         </div>
                     </div>
                 </div>

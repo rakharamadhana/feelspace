@@ -24,7 +24,7 @@ const Card = ({ imageUrl, text, bgColor, borderColor, textColor, link, simple, t
                             <img
                                 className="w-48 h-48 md:w-60 md:h-60 lg:w-72 lg:h-72 rounded-xl"
                                 src={imageUrl}
-                                alt="Card image"
+                                alt="Card Illustration"
                             />
                             <div className={`mt-4 md:mt-6 lg:mt-8 font-bold text-2xl md:text-4xl lg:text-5xl text-center ${textColor}`}>
                                 {text}
@@ -50,7 +50,7 @@ const Card = ({ imageUrl, text, bgColor, borderColor, textColor, link, simple, t
                             <img
                                 className="w-48 h-48 md:w-60 md:h-60 lg:w-72 lg:h-72 rounded-xl"
                                 src={imageUrl}
-                                alt="Card image"
+                                alt="Card Illustration"
                             />
                             <div className={`mt-4 md:mt-6 lg:mt-8 font-bold text-2xl md:text-4xl lg:text-5xl text-center ${textColor}`}>
                                 {text}
