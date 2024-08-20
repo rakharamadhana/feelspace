@@ -101,7 +101,7 @@ const CardMakerCreate = () => {
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
         // Border
-        ctx.strokeStyle = "#ff8c00"; // Border color
+        ctx.strokeStyle = "#6c757d"; // Border color
         ctx.lineWidth = 16; // Border width (match the CSS border-8)
         ctx.strokeRect(8, 8, canvas.width - 16, canvas.height - 16); // Adjusting for the border
 
@@ -230,7 +230,7 @@ const CardMakerCreate = () => {
                     </button>
 
                     <div
-                        className="mb-3 w-[97vw] max-w-[600px] h-[48rem] rounded-2xl overflow-hidden shadow-lg border-orange-500 border-8 bg-[#ffffff]">
+                        className="mb-3 w-[97vw] max-w-[600px] h-[48rem] rounded-2xl overflow-hidden shadow-lg border-gray-500 border-8 bg-[#ffffff]">
                         {/* Title Input */}
                         <div className="w-full h-auto flex items-center justify-center">
                             <input
