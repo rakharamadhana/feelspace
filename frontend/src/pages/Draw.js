@@ -16,7 +16,7 @@ const Draw = () => {
                     <h1 className="text-6xl lg:text-8xl xl:text-9xl text-center font-bold mb-3">繪圖板</h1>
                     <button
                         onClick={() => navigate(-1)}  // Use navigate(-1) to go back to the previous page
-                        className="bg-gray-400 text-white font-bold py-2 px-6 rounded-full shadow-lg hover:bg-gray-500 transition duration-300 text-lg lg:text-xl mb-3"
+                        className="bg-gray-400 text-white font-bold py-2 px-6 rounded-full shadow-lg hover:bg-gray-500 hover:scale-110 active:scale-95 transition duration-300 ease-in-out text-lg lg:text-xl mb-3"
                     >
                         返回
                     </button>

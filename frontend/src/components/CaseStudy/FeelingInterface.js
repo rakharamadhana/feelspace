@@ -34,13 +34,13 @@ const FeelingInterface = ({ character, onBackClick, onNextClick, initialValue })
             <div className="flex justify-between mt-6">
                 <button
                     onClick={() => onBackClick(feelingText)}
-                    className="bg-gray-400 text-white font-bold py-2 px-6 rounded-full shadow-lg hover:bg-gray-500 transition duration-300 text-lg lg:text-xl"
+                    className="bg-gray-400 text-white font-bold py-2 px-6 rounded-full shadow-lg hover:bg-gray-500 hover:scale-110 active:scale-95 transition duration-300 ease-in-out text-lg lg:text-xl"
                 >
                     返回
                 </button>
                 <button
                     onClick={() => onNextClick(feelingText)}
-                    className="bg-yellow-500 text-white font-bold py-2 px-6 rounded-full shadow-lg hover:bg-yellow-600 transition duration-300 text-lg lg:text-xl"
+                    className="bg-yellow-500 text-white font-bold py-2 px-6 rounded-full shadow-lg hover:bg-yellow-600 hover:scale-110 active:scale-95 transition duration-300 ease-in-out text-lg lg:text-xl"
                 >
                     下一個
                 </button>

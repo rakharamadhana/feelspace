@@ -36,3 +36,10 @@
     transform: rotate(360deg);
   }
 }
+
+@media (hover: none) {
+  .disable-hover-on-touch:hover {
+    transform: none;
+    background-color: inherit;
+  }
+}

@@ -5,7 +5,7 @@ const Card = ({ imageUrl, text, bgColor, borderColor, textColor, link, simple })
     return (
         <Link
             to={link}
-            className={`max-w-xs md:max-w-sm lg:max-w-md rounded-3xl overflow-hidden shadow-lg hover:bg-opacity-80 transition duration-300 cursor-pointer ${simple ? `border-8 ${borderColor}` : bgColor}`}
+            className={`max-w-xs md:max-w-sm lg:max-w-md rounded-3xl overflow-hidden shadow-lg hover:bg-opacity-80 hover:scale-110 active:scale-95 transition duration-300 ease-in-out cursor-pointer disable-hover-on-touch ${simple ? `border-8 ${borderColor}` : bgColor}`}
         >
             <div className={`flex flex-col items-center p-4 md:p-6 lg:p-8 ${simple ? 'bg-white' : bgColor} rounded-xl`}>
                 {simple ? (

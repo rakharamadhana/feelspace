@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import {Link, useNavigate} from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import FadeIn from '../components/FadeIn';
@@ -124,9 +124,10 @@ const Login = () => {
                                 <a href="#" className="text-sm text-blue-500 hover:underline">忘記密碼了嗎？</a>
                             </div>
                             <button onClick={handleLogin}
-                                    className="w-full mt-6 bg-orange-500 text-white font-bold py-3 px-6 rounded-lg shadow-lg hover:bg-orange-700 transition duration-300">
+                                    className="w-full mt-6 bg-orange-500 text-white font-bold py-3 px-6 rounded-lg shadow-lg hover:bg-orange-700 hover:scale-110 active:scale-95 transition duration-300 ease-in-out">
                                 登入
                             </button>
+                            
                         </div>
                     </div>
                 </div>

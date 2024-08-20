@@ -18,7 +18,7 @@ const Home = () => {
                     </h2>
                     <Link
                         to="/login"
-                        className="bg-orange-500 text-white text-lg lg:text-5xl xl:text-6xl font-bold py-6 px-10 rounded-full shadow-lg hover:bg-orange-700 transition duration-300"
+                        className="bg-orange-500 text-white text-lg lg:text-5xl xl:text-6xl font-bold py-6 px-10 rounded-full shadow-lg hover:bg-orange-700 transform hover:scale-110 active:scale-95 transition duration-300 ease-in-out"
                     >
                         登入
                     </Link>

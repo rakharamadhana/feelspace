@@ -224,7 +224,7 @@ const CardMakerCreate = () => {
                     <h1 className="text-5xl lg:text-7xl xl:text-8xl text-center font-bold mb-3">卡牌創作</h1>
                     <button
                         onClick={() => navigate(-1)}
-                        className="bg-gray-400 text-white font-bold py-2 px-6 rounded-full shadow-lg hover:bg-gray-500 transition duration-300 text-lg lg:text-xl mb-3"
+                        className="bg-gray-400 text-white font-bold py-2 px-6 rounded-full shadow-lg hover:bg-gray-500 transform hover:scale-110 active:scale-95 transition duration-300 ease-in-out text-lg lg:text-xl mb-3"
                     >
                         返回
                     </button>
@@ -268,6 +268,7 @@ const CardMakerCreate = () => {
                         {/* Textarea */}
                         <div
                             className="relative w-[30rem] left-14 h-40 -bottom-12 border-gray-500 border-8 bg-white rounded-2xl flex items-center justify-center">
+                            {error && <span className="text-red-500 text-center">{error}</span>}
                             <textarea
                                 className="w-full h-full p-3 rounded-2xl focus:outline-none text-2xl text-center"
                                 placeholder="輸入情緒/對應的顏色"
@@ -276,14 +277,13 @@ const CardMakerCreate = () => {
                                 onChange={handleChange}
                                 style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                             ></textarea>
-                            {error && <p className="text-red-500 text-center">{error}</p>}
                         </div>
                     </div>
 
-                    <div className="flex justify-center mt-6">
+                    <div className="flex justify-center mt-3">
                         <button
                             onClick={handleSave}
-                            className="bg-orange-500 text-white font-bold py-2 px-6 rounded-full shadow-lg hover:bg-orange-600 transition duration-300 text-lg lg:text-3xl"
+                            className="bg-orange-500 text-white font-bold py-2 px-6 rounded-full shadow-lg hover:bg-orange-600 hover:scale-110 active:scale-95 transition duration-300 ease-in-out text-lg lg:text-3xl mb-3"
                         >
                             保存卡片/下載
                         </button>

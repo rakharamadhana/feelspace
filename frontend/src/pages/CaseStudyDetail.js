@@ -210,14 +210,15 @@ const CaseStudyDetail = () => {
                         <>
                             {selectedCharacter ? (
                                 <>
-                                    <CaseTitle title="案例探討" />
+                                    <CaseTitle title="案例探討"/>
                                     <StoryTitleBox
                                         title={caseDetails.title}
                                         borderColor={caseDetails.borderColor}
                                         textColor={caseDetails.textColor}
                                         bgColor="bg-white"
                                     />
-                                    <div className="flex flex-col lg:flex-row w-full max-w-6xl space-y-6 lg:space-y-0 lg:space-x-6 mb-8">
+                                    <div
+                                        className="flex flex-col lg:flex-row w-full max-w-6xl space-y-6 lg:space-y-0 lg:space-x-6 mb-8">
                                         {view !== 'conclusionInterface' && (
                                             <StoryContent
                                                 character={selectedCharacter}
@@ -278,7 +279,7 @@ const CaseStudyDetail = () => {
                                 </>
                             ) : (
                                 <>
-                                    <CaseTitle title="案例探討" />
+                                    <CaseTitle title="案例探討"/>
                                     <StoryTitleBox
                                         title={caseDetails.title}
                                         borderColor={caseDetails.borderColor}
@@ -304,7 +305,7 @@ const CaseStudyDetail = () => {
                         </>
                     ) : (
                         <>
-                            <CaseTitle title="Loading..." />
+                            <CaseTitle title="Loading..."/>
                             <StoryTitleBox
                                 title="Loading"
                                 borderColor="border-gray-300"
@@ -316,7 +317,7 @@ const CaseStudyDetail = () => {
                                     fadeRightCard ? 'opacity-100' : 'opacity-0'
                                 }`}
                             >
-                                <StoryContent />
+                                <StoryContent/>
                             </div>
                         </>
                     )}

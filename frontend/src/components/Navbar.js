@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 import { Fragment } from 'react';
@@ -15,6 +16,7 @@ const Navbar = () => {
     const location = useLocation();
     const role = localStorage.getItem('role');
     const userName = localStorage.getItem('name');
+    const [isTouched, setIsTouched] = useState(false);
 
     const navigation = [
         { name: 'Home', href: `/${role.toLowerCase()}-dashboard`, current: location.pathname === `/${role.toLowerCase()}-dashboard` },
@@ -53,13 +55,21 @@ const Navbar = () => {
                                                 key={item.name}
                                                 to={item.href}
                                                 className={classNames(
-                                                    item.current ? 'bg-orange-700 text-white' : 'bg-orange-500 text-white hover:bg-orange-700 hover:text-white',
-                                                    item.name === "Home" ? 'rounded-full px-6 py-3 flex items-center space-x-2 text-md font-bold' : 'rounded-md px-3 py-2 text-sm font-medium'
+                                                    item.current
+                                                        ? 'bg-orange-700 text-white'
+                                                        : `bg-orange-500 text-white hover:bg-orange-700 hover:text-white ${
+                                                            isTouched ? 'scale-95' : 'hover:scale-110'
+                                                        } active:scale-95 transition duration-300 ease-in-out`,
+                                                    item.name === 'Home'
+                                                        ? 'rounded-full px-6 py-3 flex items-center space-x-2 text-md font-bold'
+                                                        : 'rounded-md px-3 py-2 text-sm font-medium'
                                                 )}
                                                 aria-current={item.current ? 'page' : undefined}
+                                                onTouchStart={() => setIsTouched(true)}
+                                                onTouchEnd={() => setIsTouched(false)}
                                             >
-                                                {item.name === "Home" && (
-                                                    <FontAwesomeIcon icon={faHome} className="mr-2 text-xl"/>
+                                                {item.name === 'Home' && (
+                                                    <FontAwesomeIcon icon={faHome} className="mr-2 text-xl" />
                                                 )}
                                                 {item.name}
                                             </Link>
