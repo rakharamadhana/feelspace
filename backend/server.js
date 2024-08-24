@@ -7,6 +7,8 @@ const jwt = require('jsonwebtoken');
 const path = require('path');
 const dotenv = require('dotenv');
 const axios = require('axios');
+const multer = require('multer');
+const fs = require('fs');
 
 // Define a new base route for the API
 const apiRouter = express.Router();
@@ -75,6 +77,33 @@ const verifyToken = (req, res, next) => {
         verifyTokenWithJWT(token, req, res, next);
     }
 };
+
+// Setup Multer for file uploads
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        const userId = req.user.id.toString(); // Convert the user ID to a string
+        const currentDate = new Date().toISOString().split('T')[0]; // Get the current date in YYYY-MM-DD format
+
+        const uploadDir = path.join(__dirname, 'uploads', userId, currentDate); // Construct the path as user_id/date
+
+        // Create the directory if it doesn't exist
+        if (!fs.existsSync(uploadDir)) {
+            fs.mkdirSync(uploadDir, { recursive: true });
+        }
+
+        cb(null, uploadDir); // Set the upload directory
+    },
+    filename: function (req, file, cb) {
+        cb(null, `${Date.now()}-${file.originalname}`); // Use a unique filename
+    }
+});
+
+const upload = multer({
+    storage: storage,
+    limits: {
+        fileSize: 5 * 1024 * 1024, // Set a limit for file size (5 MB in this case)
+    }
+});
 
 const verifyTokenWithJWT = (token, req, res, next) => {
     jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
@@ -632,6 +661,27 @@ apiRouter.post('/cases/details/:id/:character_id/save', verifyToken, (req, res) 
                 res.status(201).send('Case details saved successfully');
             });
         }
+    });
+});
+
+// Create a new card
+apiRouter.post('/cards/save', verifyToken, upload.single('image'), (req, res) => {
+
+    const { title, description } = req.body;
+    const imagePath = req.file ? req.file.path : null;
+    const userId = req.user.id;  // Retrieve the userId from the decoded token
+
+    if (!title || !description || !imagePath || !userId) {
+        return res.status(400).json({ error: 'All fields are required.' });
+    }
+
+    const query = 'INSERT INTO cards (title, image, image_path, description, user_id) VALUES (?, ?, ?, ?, ?)';
+    db.query(query, [title, req.file.filename, imagePath, description, userId], (err, result) => {
+        if (err) {
+            console.error('Error inserting card into database:', err);
+            return res.status(500).json({ error: 'Database error.' });
+        }
+        res.status(201).json({ message: 'Card created successfully.', cardId: result.insertId });
     });
 });
 

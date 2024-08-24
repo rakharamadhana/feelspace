@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Navbar from '../components/Navbar';
 import FadeIn from "../components/FadeIn";
 import { useNavigate } from "react-router-dom";
-import axios from 'axios';
+import api from '../api'; // Import your custom axios instance
 
 const CardMakerCreate = () => {
     const role = localStorage.getItem('role');
@@ -10,7 +10,8 @@ const CardMakerCreate = () => {
     const [text, setText] = useState('');
     const [title, setTitle] = useState(''); // New state for title
     const [error, setError] = useState('');
-    const [image, setImage] = useState(null);
+    const [imagePreview, setImagePreview] = useState(null); // Data URL for preview
+    const [imageFile, setImageFile] = useState(null); // Original file for upload
     const [isDragging, setIsDragging] = useState(false);
 
     const isChinese = (char) => /[\u4e00-\u9fa5]/.test(char);
@@ -53,11 +54,17 @@ const CardMakerCreate = () => {
     const handleImageUpload = (e) => {
         const file = e.target.files ? e.target.files[0] : e.dataTransfer.files[0];
         if (file) {
-            const reader = new FileReader();
-            reader.onload = () => {
-                setImage(reader.result);
-            };
-            reader.readAsDataURL(file);
+           if (file instanceof File && file.type.startsWith('image/')) {
+                setImageFile(file); // Store the original File object
+                const reader = new FileReader();
+                reader.onload = () => {
+                    setImagePreview(reader.result); // Set the Data URL for preview
+                };
+                reader.readAsDataURL(file);
+            } else {
+                console.error('The selected file is not a valid image.');
+                setError('Please select a valid image file.');
+            }
         }
     };
 
@@ -77,19 +84,48 @@ const CardMakerCreate = () => {
     };
 
     const handleSave = () => {
-        if (!title || !image || !text) {
+        if (!title || !imageFile || !text) {
             setError('All fields are required.');
             return;
         }
 
-        const cardData = {
-            title,
-            image,
-            description: text
-        };
+        // Check if the image is a File object
+        if (!(imageFile instanceof File)) {
+            console.error('Image is not a valid File object');
+            setError('Image is not a valid file.');
+            return;
+        }
 
-        console.log("Saving card data:", cardData);
+        const formData = new FormData();
+        formData.append('title', title);
+        formData.append('image', imageFile); // Ensure this is the original file object
+        formData.append('description', text);
 
+        // Get the token from localStorage
+        const token = localStorage.getItem('token');
+
+        api.post('/cards/save', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                'Authorization': `Bearer ${token}` // Only set the Authorization header
+            }
+        })
+            .then(response => {
+                console.log('Card saved successfully:', response.data);
+                // Redirect or update UI after successful save
+                navigate('/card-maker/create'); // Adjust this to your desired route
+            })
+            .catch(error => {
+                console.error('Error saving card:', error);
+                setError('There was an error saving the card. Please try again.');
+            });
+
+        // Optionally, generate the card image locally and download it
+        generateCardImage(title, text, imageFile); // Ensure this function handles image generation and download
+    };
+
+    // Function to generate and download the card image
+    const generateCardImage = (title, text, imageSrc) => {
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
 
@@ -131,7 +167,7 @@ const CardMakerCreate = () => {
         ctx.font = "30px Arial"; // Match the font and size
         ctx.fillStyle = "#fff"; // White text color
         ctx.textAlign = "center";
-        ctx.fillText(cardData.title, canvas.width / 2, rectY + rectHeight / 1.5); // Adjust the position
+        ctx.fillText(title, canvas.width / 2, rectY + rectHeight / 1.5); // Adjust the position
 
         // Image Box with Rounded Corners
         const imageCornerRadius = 20; // Adjust this value for more or less rounding
@@ -161,7 +197,7 @@ const CardMakerCreate = () => {
 
         // Draw the uploaded image inside the clipped area
         const img = new Image();
-        img.src = cardData.image;
+        img.src = imageSrc;
 
         img.onload = () => {
             const aspectRatio = img.width / img.height;
@@ -206,13 +242,15 @@ const CardMakerCreate = () => {
             ctx.font = "20px Arial"; // Match the font and size
             ctx.fillStyle = "#000"; // Black text color
             ctx.textAlign = "center";
-            ctx.fillText(cardData.description, canvas.width / 2, descY + descHeight / 2 + 10); // Centered text
+            ctx.fillText(text, canvas.width / 2, descY + descHeight / 2 + 10); // Centered text
 
-            // Download the card as an image
-            const link = document.createElement('a');
-            link.download = `${cardData.title}.png`;
-            link.href = canvas.toDataURL("image/png");
-            link.click();
+            // Download the card as an image locally
+            canvas.toBlob((blob) => {
+                const downloadLink = document.createElement('a');
+                downloadLink.download = `${title}.png`;
+                downloadLink.href = URL.createObjectURL(blob);
+                downloadLink.click();
+            }, 'image/png');
         };
     };
 
@@ -249,8 +287,8 @@ const CardMakerCreate = () => {
                             onDragLeave={handleDragLeave}
                             onDrop={handleDrop}
                         >
-                            {image ? (
-                                <img src={image} alt="Uploaded" className="w-full h-full object-cover"/>
+                            {imageFile ? (
+                                <img src={imagePreview} alt="Uploaded" className="w-full h-full object-cover"/>
                             ) : (
                                 <label className="flex flex-col items-center justify-center cursor-pointer">
                                     <span>上傳圖片</span>
