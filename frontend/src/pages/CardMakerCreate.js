@@ -121,7 +121,7 @@ const CardMakerCreate = () => {
             });
 
         // Optionally, generate the card image locally and download it
-        generateCardImage(title, text, imageFile); // Ensure this function handles image generation and download
+        generateCardImage(title, text, imagePreview); // Ensure this function handles image generation and download
     };
 
     // Function to generate and download the card image
