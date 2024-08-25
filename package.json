@@ -4,9 +4,9 @@
   "description": "Social Emotion Learning App from Digital Learning and Education, NTUST, Taiwan",
   "license": "MIT",
   "scripts": {
-    "start": "concurrently \"npm run start-frontend\" \"npm run start-backend\"",
-    "start-frontend": "npm start --prefix frontend",
-    "start-backend": "npm start --prefix backend"
+    "start": "concurrently \"yarn start-frontend\" \"yarn start-backend\"",
+    "start-frontend": "yarn --cwd frontend start",
+    "start-backend": "yarn --cwd backend start"
   },
   "dependencies": {
     "concurrently": "^6.2.1",
