@@ -65,11 +65,11 @@ const Login = () => {
                 <div className="flex flex-col lg:flex-row xl:flex-row w-full max-w-6xl mx-auto bg-[#fff4e3]">
                     {/* Text Section */}
                     <div
-                        className="flex-initial flex flex-col justify-center items-center lg:items-center xl:items-center text-center lg:text-center xl:text-center p-6 lg:p-12 xl:p-16">
-                        <h1 className="text-4xl lg:text-5xl xl:text-5xl font-bold text-orange-600 mb-4 lg:mb-6 xl:mb-8">
+                        className="flex-initial flex flex-col justify-center items-center lg:items-center xl:items-center text-center lg:text-center xl:text-center p-6 lg:p-12 xl:p-16 ">
+                        <h1 className="text-4xl lg:text-5xl xl:text-5xl font-bold text-orange-600 mb-4 lg:mb-6 xl:mb-8 z-10">
                             玩轉情緒學習平台
                         </h1>
-                        <h2 className="text-2xl lg:text-3xl xl:text-4xl font-semibold text-gray-800">
+                        <h2 className="text-2xl lg:text-3xl xl:text-4xl font-semibold text-gray-800 z-10">
                             FeelSpace Navigator
                         </h2>
                         {/* Right Section - Image */}

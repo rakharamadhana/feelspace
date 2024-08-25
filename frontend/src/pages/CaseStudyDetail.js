@@ -194,6 +194,7 @@ const CaseStudyDetail = () => {
         })
             .then(response => {
                 console.log('Data saved successfully:', response.data);
+                localStorage.setItem('showSaveNotification', 'true');
                 navigate('/case-study');
             })
             .catch(error => {

@@ -15,28 +15,28 @@ const ConclusionInterface = ({ previousAnswers, character, onBackClick, onSaveCl
                         <span className="text-orange-500 lg:text-3xl">情緒選擇:</span>
                         {(() => {
                             switch(previousAnswers.selectedEmotion) {
-                                case 1:
+                                case '生氣的':
                                     return (
                                         <span className="inline-flex items-center">
                                             <span className="text-2xl lg:text-3xl">😡</span>
-                                            <span className="text-lg lg:text-xl">失望的</span>
+                                            <span className="text-lg lg:text-xl">生氣的</span>
                                         </span>
                                     );
-                                case 2:
+                                case '冤枉的':
                                     return (
                                         <span className="inline-flex items-center">
                                             <span className="text-2xl lg:text-3xl">😔</span>
-                                            <span className="text-lg lg:text-xl">冤望的</span>
+                                            <span className="text-lg lg:text-xl">冤枉的</span>
                                         </span>
                                     );
-                                case 3:
+                                case '焦急的':
                                     return (
                                         <span className="inline-flex items-center">
                                             <span className="text-2xl lg:text-3xl">😰</span>
                                             <span className="text-lg lg:text-xl">焦急的</span>
                                         </span>
                                     );
-                                case 4:
+                                case '難過的':
                                     return (
                                         <span className="inline-flex items-center">
                                             <span className="text-2xl lg:text-3xl">😭</span>
@@ -44,7 +44,11 @@ const ConclusionInterface = ({ previousAnswers, character, onBackClick, onSaveCl
                                         </span>
                                     );
                                 default:
-                                    return null;
+                                    return (
+                                        <span className="inline-flex items-center">
+                                            <span className="text-lg lg:text-xl">{previousAnswers.selectedEmotion}</span>
+                                        </span>
+                                    );
                             }
                         })()}
                     </div>
