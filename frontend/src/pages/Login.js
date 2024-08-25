@@ -40,6 +40,9 @@ const Login = () => {
                 localStorage.setItem('name', response.data.name);
                 localStorage.setItem('email', response.data.email);
 
+                // Store both the message and type in one line
+                localStorage.setItem('notification', JSON.stringify({ message: 'Login successful! Welcome back ' + response.data.name + '!', type: 'success' }));
+
                 if (response.data.role === 'Admin') {
                     navigate('/admin-dashboard');
                 } else if (response.data.role === 'Teacher') {
@@ -49,14 +52,16 @@ const Login = () => {
                 }
             })
             .catch(error => {
-                console.error('Error during login:', error);
                 if (error.response) {
-                    console.error('Response data:', error.response.data);
-                    console.error('Response status:', error.response.status);
-                    console.error('Response headers:', error.response.headers);
+                    // Check if there is specific error data from the server
+                    const serverErrorMessage = error.response.data?.message || error.response.data; // Adjust based on the actual structure of your error response
+                    setError(serverErrorMessage);
+                } else {
+                    // Fallback to a generic message if no specific error data is available
+                    setError('An error occurred. Please try again later.');
                 }
-                setError('An error occurred. Please try again later.');
             });
+
     };
 
     return (

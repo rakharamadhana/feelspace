@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import Navbar from '../components/Navbar';
 import FadeIn from "../components/FadeIn";
 import { useNavigate } from "react-router-dom";
-import api from '../api'; // Import your custom axios instance
+import api from '../api';
+import Notification from "../components/Notification"; // Import your custom axios instance
 
 const CardMakerCreate = () => {
     const role = localStorage.getItem('role');
@@ -13,6 +14,25 @@ const CardMakerCreate = () => {
     const [imagePreview, setImagePreview] = useState(null); // Data URL for preview
     const [imageFile, setImageFile] = useState(null); // Original file for upload
     const [isDragging, setIsDragging] = useState(false);
+    const [notificationMessage, setNotificationMessage] = useState('');
+    const [notificationType, setNotificationType] = useState('');
+
+    useEffect(() => {
+        // Get the notification object from localStorage
+        const notificationData = localStorage.getItem('notification');
+
+        if (notificationData) {
+            const { message, type } = JSON.parse(notificationData); // Parse the JSON string
+            setNotificationMessage(message);
+            setNotificationType(type || 'success'); // Default to 'success' if no type is provided
+            localStorage.removeItem('notification'); // Clear notification after displaying it
+        }
+    }, []);
+
+    const handleCloseNotification = () => {
+        setNotificationMessage(''); // Clear the notification message
+        setNotificationType(''); // Clear the notification type
+    };
 
     const isChinese = (char) => /[\u4e00-\u9fa5]/.test(char);
 
@@ -112,8 +132,10 @@ const CardMakerCreate = () => {
         })
             .then(response => {
                 console.log('Card saved successfully:', response.data);
-                // Redirect or update UI after successful save
-                navigate('/card-maker/create'); // Adjust this to your desired route
+
+                // Set notification directly in state
+                setNotificationMessage(response.data.message);
+                setNotificationType('success');
             })
             .catch(error => {
                 console.error('Error saving card:', error);
@@ -257,6 +279,7 @@ const CardMakerCreate = () => {
     return (
         <div className="min-h-screen flex flex-col" style={{ backgroundColor: '#fff4e3' }}>
             <Navbar role={role} />
+            <Notification message={notificationMessage} type={notificationType} onClose={handleCloseNotification} />
             <div className="flex-grow flex flex-col items-center justify-center text-black">
                 <FadeIn>
                     <h1 className="text-5xl lg:text-7xl xl:text-8xl text-center font-bold mb-3">卡牌創作</h1>

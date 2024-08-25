@@ -2,12 +2,14 @@ import React, { useState, useEffect } from 'react';
 import Navbar from '../components/Navbar';
 import Card from '../components/Card';
 import FadeIn from "../components/FadeIn";
+import Notification from '../components/Notification'; // Adjust the import path as needed
 import api from '../api';
 
 const CaseStudy = () => {
     const [cases, setCases] = useState([]);
     const role = localStorage.getItem('role');
-    const [showNotification, setShowNotification] = useState(false);
+    const [notificationMessage, setNotificationMessage] = useState('');
+    const [notificationType, setNotificationType] = useState('');
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -24,12 +26,21 @@ const CaseStudy = () => {
                 console.error('Error fetching cases:', error);
             });
 
-        // Check for notification flag in localStorage
-        if (localStorage.getItem('showSaveNotification')) {
-            setShowNotification(true);
-            localStorage.removeItem('showSaveNotification'); // Clear flag after displaying notification
+        // Get the notification object from localStorage
+        const notificationData = localStorage.getItem('notification');
+
+        if (notificationData) {
+            const { message, type } = JSON.parse(notificationData); // Parse the JSON string
+            setNotificationMessage(message);
+            setNotificationType(type || 'success'); // Default to 'success' if no type is provided
+            localStorage.removeItem('notification'); // Clear notification after displaying it
         }
     }, []);
+
+    const handleCloseNotification = () => {
+        setNotificationMessage(''); // Clear the notification message
+        setNotificationType(''); // Clear the notification type
+    };
 
     // Calculate the min-width based on the number of cards
     const cardWidth = 320; // Adjust this to the width of your cards
@@ -41,13 +52,8 @@ const CaseStudy = () => {
             <Navbar role={role} />
             <div className="flex-grow flex flex-col items-center justify-center text-black">
                 <FadeIn>
-                    {showNotification && (
-                        <div className="fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded shadow-md transition-opacity duration-300">
-                            Data saved successfully!
-                        </div>
-                    )}
+                    <Notification message={notificationMessage} type={notificationType} onClose={handleCloseNotification} />
                     <h1 className="text-6xl lg:text-8xl xl:text-9xl text-center font-bold mb-16">案例探討</h1>
-                    {/* Notification Component */}
                     <div className="w-full max-w-6xl overflow-x-auto">
                         <div
                             className="flex space-x-6 pb-4 px-4"

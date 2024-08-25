@@ -194,7 +194,10 @@ const CaseStudyDetail = () => {
         })
             .then(response => {
                 console.log('Data saved successfully:', response.data);
-                localStorage.setItem('showSaveNotification', 'true');
+
+                // Store both the message and type in one line
+                localStorage.setItem('notification', JSON.stringify({ message: response.data, type: 'success' }));
+
                 navigate('/case-study');
             })
             .catch(error => {
@@ -206,6 +209,7 @@ const CaseStudyDetail = () => {
         <div className="min-h-screen flex flex-col" style={{ backgroundColor: '#fff4e3' }}>
             <Navbar role={role} />
             <FadeIn>
+
                 <div className="flex flex-col items-center text-black">
                     {caseDetails ? (
                         <>

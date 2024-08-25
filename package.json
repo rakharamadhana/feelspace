@@ -1,4 +1,8 @@
 {
+  "name": "feelspace",
+  "version": "1.0.0",
+  "description": "Social Emotion Learning App from Digital Learning and Education, NTUST, Taiwan",
+  "license": "MIT",
   "scripts": {
     "start": "concurrently \"npm run start-frontend\" \"npm run start-backend\"",
     "start-frontend": "npm start --prefix frontend",
