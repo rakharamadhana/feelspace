@@ -6,7 +6,8 @@
   "scripts": {
     "start": "concurrently \"yarn start-frontend\" \"yarn start-backend\"",
     "start-frontend": "yarn --cwd frontend start",
-    "start-backend": "yarn --cwd backend start"
+    "start-backend": "yarn --cwd backend start",
+    "build": "yarn --cwd frontend build prod"
   },
   "dependencies": {
     "concurrently": "^6.2.1",
