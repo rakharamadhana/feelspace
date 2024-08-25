@@ -38,6 +38,9 @@ app.use(cors(corsOptions));
 
 app.use(bodyParser.json());
 
+// Serve static files from the 'uploads' directory
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 const db = mysql.createConnection({
     host: process.env.DATABASE_HOST,
     user: process.env.DATABASE_USER,
@@ -668,20 +671,44 @@ apiRouter.post('/cases/details/:id/:character_id/save', verifyToken, (req, res) 
 apiRouter.post('/cards/save', verifyToken, upload.single('image'), (req, res) => {
 
     const { title, description } = req.body;
-    const imagePath = req.file ? req.file.path : null;
     const userId = req.user.id;  // Retrieve the userId from the decoded token
 
-    if (!title || !description || !imagePath || !userId) {
+    // Construct the relative path to store in the database
+    const relativeImagePath = path.join(userId.toString(), new Date().toISOString().split('T')[0], req.file.filename);
+
+    if (!title || !description || !userId) {
         return res.status(400).json({ error: 'All fields are required.' });
     }
 
     const query = 'INSERT INTO cards (title, image, image_path, description, user_id) VALUES (?, ?, ?, ?, ?)';
-    db.query(query, [title, req.file.filename, imagePath, description, userId], (err, result) => {
+    db.query(query, [title, req.file.filename, relativeImagePath, description, userId], (err, result) => {
         if (err) {
             console.error('Error inserting card into database:', err);
             return res.status(500).json({ error: 'Database error.' });
         }
         res.status(201).json({ message: 'Card created successfully.', cardId: result.insertId });
+    });
+});
+
+
+// Fetch cards created by the logged-in user
+apiRouter.get('/cards/user', verifyToken, (req, res) => {
+    const userId = req.user.id; // Extract the user ID from the decoded JWT token
+
+    const query = `
+        SELECT id, title, image_path, description, created_at 
+        FROM cards 
+        WHERE user_id = ?
+    `;
+
+    db.query(query, [userId], (err, results) => {
+        if (err) {
+            console.error('Error fetching user cards:', err);
+            return res.status(500).json({ error: 'Database error.' });
+        }
+
+        // Return the cards as a response
+        res.status(200).json(results);
     });
 });
 

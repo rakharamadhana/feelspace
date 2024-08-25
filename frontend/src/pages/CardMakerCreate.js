@@ -2,6 +2,8 @@ import React, {useEffect, useState} from 'react';
 import Navbar from '../components/Navbar';
 import FadeIn from "../components/FadeIn";
 import { useNavigate } from "react-router-dom";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faDownload } from '@fortawesome/free-solid-svg-icons';
 import api from '../api';
 import Notification from "../components/Notification"; // Import your custom axios instance
 
@@ -9,15 +11,19 @@ const CardMakerCreate = () => {
     const role = localStorage.getItem('role');
     const navigate = useNavigate();
     const [text, setText] = useState('');
-    const [title, setTitle] = useState(''); // New state for title
+    const [title, setTitle] = useState('');
     const [error, setError] = useState('');
-    const [imagePreview, setImagePreview] = useState(null); // Data URL for preview
-    const [imageFile, setImageFile] = useState(null); // Original file for upload
+    const [imagePreview, setImagePreview] = useState(null);
+    const [imageFile, setImageFile] = useState(null);
     const [isDragging, setIsDragging] = useState(false);
     const [notificationMessage, setNotificationMessage] = useState('');
     const [notificationType, setNotificationType] = useState('');
+    const [userCards, setUserCards] = useState([]); // State to store user cards
 
     useEffect(() => {
+        // Fetch user cards when the component mounts
+        fetchUserCards();
+
         // Get the notification object from localStorage
         const notificationData = localStorage.getItem('notification');
 
@@ -28,6 +34,23 @@ const CardMakerCreate = () => {
             localStorage.removeItem('notification'); // Clear notification after displaying it
         }
     }, []);
+
+    // Fetch user cards when the component mounts
+    const fetchUserCards = () => {
+        const token = localStorage.getItem('token');
+        api.get('/cards/user', {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        })
+            .then(response => {
+                setUserCards(response.data); // Store cards in state
+            })
+            .catch(error => {
+                console.error('Error fetching user cards:', error);
+            });
+    };
+
 
     const handleCloseNotification = () => {
         setNotificationMessage(''); // Clear the notification message
@@ -219,6 +242,7 @@ const CardMakerCreate = () => {
 
         // Draw the uploaded image inside the clipped area
         const img = new Image();
+        img.crossOrigin = "anonymous"; // Add this line
         img.src = imageSrc;
 
         img.onload = () => {
@@ -274,6 +298,10 @@ const CardMakerCreate = () => {
                 downloadLink.click();
             }, 'image/png');
         };
+
+        img.onerror = () => {
+            console.error('Image loading failed. Ensure the server has proper CORS headers.');
+        };
     };
 
     return (
@@ -290,66 +318,120 @@ const CardMakerCreate = () => {
                         返回
                     </button>
 
-                    <div
-                        className="mb-3 w-[97vw] max-w-[600px] h-[48rem] rounded-2xl overflow-hidden shadow-lg border-gray-500 border-8 bg-[#ffffff]">
-                        {/* Title Input */}
-                        <div className="w-full h-auto flex items-center justify-center">
-                            <input
-                                type="text"
-                                className="text-center mt-5 text-2xl shadow-lg rounded-full px-1 py-2 bg-gray-500 text-white focus:outline-none"
-                                placeholder="在此輸入您的卡片標題"
-                                value={title}
-                                onChange={(e) => setTitle(e.target.value)}
-                            />
+                    {/* Flex container to align card creation and user cards table side by side */}
+                    <div className="flex w-full max-w-5xl mx-auto">
+                        {/* Card Creation Form */}
+                        <div className="flex-1 mb-3 w-full h-[52rem] rounded-2xl overflow-hidden shadow-lg border-gray-500 border-8 bg-[#ffffff] px-4">
+                            {/* Title Input */}
+                            <div className="w-full h-auto flex items-center justify-center">
+                                <input
+                                    type="text"
+                                    className="text-center mt-5 text-2xl shadow-lg rounded-full px-1 py-2 bg-gray-500 text-white focus:outline-none"
+                                    placeholder="在此輸入您的卡片標題"
+                                    value={title}
+                                    onChange={(e) => setTitle(e.target.value)}
+                                />
+                            </div>
+
+                            {/* Image Upload */}
+                            <div
+                                className={`relative w-full h-96 mt-8 border-gray-500 border-8 bg-white rounded-2xl flex items-center justify-center overflow-hidden ${isDragging ? 'bg-gray-200' : 'bg-white'}`}
+                                onDragOver={handleDragOver}
+                                onDragLeave={handleDragLeave}
+                                onDrop={handleDrop}
+                            >
+                                {imageFile ? (
+                                    <img src={imagePreview} alt="Uploaded" className="w-full h-full object-cover"/>
+                                ) : (
+                                    <label className="flex flex-col items-center justify-center cursor-pointer">
+                                        <span>上傳圖片</span>
+                                        <input
+                                            type="file"
+                                            accept="image/*"
+                                            className="hidden"
+                                            onChange={handleImageUpload}
+                                        />
+                                        <p className="text-sm text-gray-500 mt-2">點擊此處或拖放圖片到此區域</p>
+                                    </label>
+                                )}
+                            </div>
+
+                            {/* Textarea */}
+                            <div className="relative w-full h-40 mt-8 border-gray-500 border-8 bg-white rounded-2xl flex items-center justify-center">
+                                {error && <span className="text-red-500 text-center">{error}</span>}
+                                <textarea
+                                    className="w-full h-full p-3 rounded-2xl focus:outline-none text-2xl text-center"
+                                    placeholder="輸入情緒/對應的顏色"
+                                    rows="4"
+                                    value={text}
+                                    onChange={handleChange}
+                                    style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                                ></textarea>
+                            </div>
+
+                            {/* Save Button */}
+                            <div className="flex justify-center mt-3">
+                                <button
+                                    onClick={handleSave}
+                                    className="bg-orange-500 text-white font-bold py-2 px-6 rounded-full shadow-lg hover:bg-orange-600 hover:scale-110 active:scale-95 transition duration-300 ease-in-out text-lg lg:text-3xl mb-3"
+                                >
+                                    保存卡片/下載
+                                </button>
+                            </div>
                         </div>
 
-                        {/* Image Upload */}
-                        <div
-                            className={`relative w-[30rem] left-14 h-[28rem] top-8 border-gray-500 border-8 bg-white rounded-2xl flex items-center justify-center overflow-hidden ${isDragging ? 'bg-gray-200' : 'bg-white'}`}
-                            onDragOver={handleDragOver}
-                            onDragLeave={handleDragLeave}
-                            onDrop={handleDrop}
-                        >
-                            {imageFile ? (
-                                <img src={imagePreview} alt="Uploaded" className="w-full h-full object-cover"/>
-                            ) : (
-                                <label className="flex flex-col items-center justify-center cursor-pointer">
-                                    <span>上傳圖片</span>
-                                    <input
-                                        type="file"
-                                        accept="image/*"
-                                        className="hidden"
-                                        onChange={handleImageUpload}
-                                    />
-                                    <p className="text-sm text-gray-500 mt-2">點擊此處或拖放圖片到此區域</p>
-                                </label>
-                            )}
-                        </div>
-
-                        {/* Textarea */}
-                        <div
-                            className="relative w-[30rem] left-14 h-40 -bottom-12 border-gray-500 border-8 bg-white rounded-2xl flex items-center justify-center">
-                            {error && <span className="text-red-500 text-center">{error}</span>}
-                            <textarea
-                                className="w-full h-full p-3 rounded-2xl focus:outline-none text-2xl text-center"
-                                placeholder="輸入情緒/對應的顏色"
-                                rows="4"
-                                value={text}
-                                onChange={handleChange}
-                                style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-                            ></textarea>
+                        {/* User's Created Cards Table */}
+                        <div className="flex-1 w-[48rem] px-4">
+                            <div className="bg-white rounded-lg shadow-lg w-2xl">
+                                <div className="overflow-y-auto h-[51rem]">
+                                    {/* Combined table for header and body */}
+                                    <table className="min-w-full">
+                                        <thead>
+                                        <tr>
+                                            <th className="py-2 px-4 border-b">標題</th>
+                                            <th className="py-2 px-4 border-b">描述</th>
+                                            <th className="py-2 px-4 border-b">圖片</th>
+                                            <th className="py-2 px-4 border-b">操作</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {userCards.map((card, index) => (
+                                            <tr key={index} className="h-[8rem]"> {/* Set each row to have a fixed height */}
+                                                <td className="py-2 px-4 border-b text-center max-w-xs truncate" title={card.title}>
+                                                    {card.title.length > 5 ? `${card.title.substring(0, 5)}...` : card.title}
+                                                </td>
+                                                <td className="py-2 px-4 border-b text-center max-w-xs truncate" title={card.description}>
+                                                    {card.description.length > 5 ? `${card.description.substring(0, 5)}...` : card.description}
+                                                </td>
+                                                <td className="py-2 px-4 border-b text-center w-[10rem]"> {/* Set a fixed width for the image */}
+                                                    <img
+                                                        src={`${process.env.REACT_APP_IMAGE_BASE_URL}/${card.image_path}`}
+                                                        alt={card.title}
+                                                        className="w-16 h-16 object-cover mx-auto"
+                                                    />
+                                                </td>
+                                                <td className="py-2 px-4 border-b text-center w-[3rem]">
+                                                    <button
+                                                        onClick={() =>
+                                                            generateCardImage(
+                                                                card.title,
+                                                                card.description,
+                                                                `${process.env.REACT_APP_IMAGE_BASE_URL}/${card.image_path}`
+                                                            )
+                                                        }
+                                                        className="bg-blue-500 text-white py-1 px-3 rounded hover:bg-blue-600 flex items-center justify-center"
+                                                    >
+                                                        <FontAwesomeIcon icon={faDownload} />
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
                     </div>
-
-                    <div className="flex justify-center mt-3">
-                        <button
-                            onClick={handleSave}
-                            className="bg-orange-500 text-white font-bold py-2 px-6 rounded-full shadow-lg hover:bg-orange-600 hover:scale-110 active:scale-95 transition duration-300 ease-in-out text-lg lg:text-3xl mb-3"
-                        >
-                            保存卡片/下載
-                        </button>
-                    </div>
-
                 </FadeIn>
             </div>
         </div>
