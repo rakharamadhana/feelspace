@@ -444,7 +444,7 @@ const CardMakerCreate = () => {
                                                     />
                                                 </td>
                                                 <td className="py-2 px-4 border-b text-center w-[3rem]">
-                                                    <div className="flex space-x-1 justify-center">
+                                                    <div className="inline-flex -space-x-0.5 justify-center">
                                                         <button
                                                             onClick={() =>
                                                                 generateCardImage(
