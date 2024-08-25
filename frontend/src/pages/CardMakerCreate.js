@@ -180,6 +180,15 @@ const CardMakerCreate = () => {
                 // Set notification directly in state
                 setNotificationMessage(response.data.message);
                 setNotificationType('success');
+
+                // Refresh the list of cards after a successful save
+                fetchUserCards();
+
+                // Clear the form fields after saving
+                setTitle('');
+                setText('');
+                setImageFile(null);
+                setImagePreview(null);
             })
             .catch(error => {
                 console.error('Error saving card:', error);
