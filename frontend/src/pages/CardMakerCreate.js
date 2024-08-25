@@ -3,7 +3,7 @@ import Navbar from '../components/Navbar';
 import FadeIn from "../components/FadeIn";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faDownload } from '@fortawesome/free-solid-svg-icons';
+import { faTrash, faDownload } from '@fortawesome/free-solid-svg-icons';
 import api from '../api';
 import Notification from "../components/Notification"; // Import your custom axios instance
 
@@ -38,7 +38,7 @@ const CardMakerCreate = () => {
     // Fetch user cards when the component mounts
     const fetchUserCards = () => {
         const token = localStorage.getItem('token');
-        api.get('/cards/user', {
+        api.get('/cards', {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
@@ -51,6 +51,27 @@ const CardMakerCreate = () => {
             });
     };
 
+    const handleDeleteCard = (cardId) => {
+        const token = localStorage.getItem('token');
+
+        if (!window.confirm('Are you sure you want to delete this card?')) {
+            return; // If user cancels, do nothing
+        }
+
+        api.delete(`/cards/delete/${cardId}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        })
+            .then(response => {
+                console.log('Card deleted successfully:', response.data);
+                // Remove the deleted card from the state to update the UI
+                setUserCards(userCards.filter(card => card.id !== cardId));
+            })
+            .catch(error => {
+                console.error('Error deleting card:', error);
+            });
+    };
 
     const handleCloseNotification = () => {
         setNotificationMessage(''); // Clear the notification message
@@ -396,11 +417,14 @@ const CardMakerCreate = () => {
                                         </thead>
                                         <tbody>
                                         {userCards.map((card, index) => (
-                                            <tr key={index} className="h-[8rem]"> {/* Set each row to have a fixed height */}
-                                                <td className="py-2 px-4 border-b text-center max-w-xs truncate" title={card.title}>
+                                            <tr key={index}
+                                                className="h-[8rem]"> {/* Set each row to have a fixed height */}
+                                                <td className="py-2 px-4 border-b text-center max-w-xs truncate"
+                                                    title={card.title}>
                                                     {card.title.length > 5 ? `${card.title.substring(0, 5)}...` : card.title}
                                                 </td>
-                                                <td className="py-2 px-4 border-b text-center max-w-xs truncate" title={card.description}>
+                                                <td className="py-2 px-4 border-b text-center max-w-xs truncate"
+                                                    title={card.description}>
                                                     {card.description.length > 5 ? `${card.description.substring(0, 5)}...` : card.description}
                                                 </td>
                                                 <td className="py-2 px-4 border-b text-center w-[10rem]"> {/* Set a fixed width for the image */}
@@ -411,18 +435,26 @@ const CardMakerCreate = () => {
                                                     />
                                                 </td>
                                                 <td className="py-2 px-4 border-b text-center w-[3rem]">
-                                                    <button
-                                                        onClick={() =>
-                                                            generateCardImage(
-                                                                card.title,
-                                                                card.description,
-                                                                `${process.env.REACT_APP_IMAGE_BASE_URL}/${card.image_path}`
-                                                            )
-                                                        }
-                                                        className="bg-blue-500 text-white py-1 px-3 rounded hover:bg-blue-600 flex items-center justify-center"
-                                                    >
-                                                        <FontAwesomeIcon icon={faDownload} />
-                                                    </button>
+                                                    <div className="flex space-x-1 justify-center">
+                                                        <button
+                                                            onClick={() =>
+                                                                generateCardImage(
+                                                                    card.title,
+                                                                    card.description,
+                                                                    `${process.env.REACT_APP_IMAGE_BASE_URL}/${card.image_path}`
+                                                                )
+                                                            }
+                                                            className="bg-blue-500 text-white py-1 px-2 rounded hover:bg-blue-600 flex items-center justify-center"
+                                                        >
+                                                            <FontAwesomeIcon icon={faDownload}/>
+                                                        </button>
+                                                        <button
+                                                            onClick={() => handleDeleteCard(card.id)}
+                                                            className="bg-red-500 text-white py-1 px-2 rounded hover:bg-red-600 flex items-center justify-center"
+                                                        >
+                                                            <FontAwesomeIcon icon={faTrash}/>
+                                                        </button>
+                                                    </div>
                                                 </td>
                                             </tr>
                                         ))}

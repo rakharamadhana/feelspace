@@ -667,6 +667,27 @@ apiRouter.post('/cases/details/:id/:character_id/save', verifyToken, (req, res) 
     });
 });
 
+// Fetch cards created by the logged-in user
+apiRouter.get('/cards', verifyToken, (req, res) => {
+    const userId = req.user.id; // Extract the user ID from the decoded JWT token
+
+    const query = `
+        SELECT id, title, image_path, description, created_at 
+        FROM cards 
+        WHERE user_id = ?
+    `;
+
+    db.query(query, [userId], (err, results) => {
+        if (err) {
+            console.error('Error fetching user cards:', err);
+            return res.status(500).json({ error: 'Database error.' });
+        }
+
+        // Return the cards as a response
+        res.status(200).json(results);
+    });
+});
+
 // Create a new card
 apiRouter.post('/cards/save', verifyToken, upload.single('image'), (req, res) => {
 
@@ -690,27 +711,46 @@ apiRouter.post('/cards/save', verifyToken, upload.single('image'), (req, res) =>
     });
 });
 
+// Delete a card by ID
+apiRouter.delete('/cards/delete/:id', verifyToken, (req, res) => {
+    const cardId = req.params.id;
+    const userId = req.user.id;
 
-// Fetch cards created by the logged-in user
-apiRouter.get('/cards/user', verifyToken, (req, res) => {
-    const userId = req.user.id; // Extract the user ID from the decoded JWT token
-
-    const query = `
-        SELECT id, title, image_path, description, created_at 
-        FROM cards 
-        WHERE user_id = ?
-    `;
-
-    db.query(query, [userId], (err, results) => {
+    // First, check if the card exists and belongs to the user
+    const selectQuery = 'SELECT image_path FROM cards WHERE id = ? AND user_id = ?';
+    db.query(selectQuery, [cardId, userId], (err, results) => {
         if (err) {
-            console.error('Error fetching user cards:', err);
+            console.error('Error fetching card:', err);
             return res.status(500).json({ error: 'Database error.' });
         }
 
-        // Return the cards as a response
-        res.status(200).json(results);
+        if (results.length === 0) {
+            return res.status(404).json({ error: 'Card not found or not owned by user.' });
+        }
+
+        const imagePath = path.join(__dirname, 'uploads', results[0].image_path);
+
+        // Delete the card from the database
+        const deleteQuery = 'DELETE FROM cards WHERE id = ? AND user_id = ?';
+        db.query(deleteQuery, [cardId, userId], (deleteErr) => {
+            if (deleteErr) {
+                console.error('Error deleting card:', deleteErr);
+                return res.status(500).json({ error: 'Database error.' });
+            }
+
+            // Delete the image file
+            fs.unlink(imagePath, (fsErr) => {
+                if (fsErr) {
+                    console.error('Error deleting image file:', fsErr);
+                    return res.status(500).json({ error: 'File system error.' });
+                }
+
+                res.status(200).json({ message: 'Card deleted successfully.' });
+            });
+        });
     });
 });
+
 
 // Use the /api base route for the API
 app.use('/api', apiRouter);
