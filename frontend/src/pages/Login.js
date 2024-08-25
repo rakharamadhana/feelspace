@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import FadeIn from '../components/FadeIn';
@@ -119,7 +119,7 @@ const Login = () => {
                                         <input type="checkbox" className="form-checkbox h-4 w-4 text-orange-500"/>
                                         <span className="ml-2">記得我</span>
                                     </label>
-                                    <a href="#" className="text-sm text-blue-500 hover:underline">忘記密碼了嗎？</a>
+                                    <a href="/" className="text-sm text-blue-500 hover:underline">忘記密碼了嗎？</a>
                                 </div>
                                 <button
                                     type="submit"

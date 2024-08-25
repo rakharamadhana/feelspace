@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 const EmotionSelection = ({ character, onBackClick, onNextClick, initialEmotion, initialReasoning }) => {
     const [selectedEmotion, setSelectedEmotion] = useState(initialEmotion || '');
     const [reasoning, setReasoning] = useState(initialReasoning || '');
-    const [customEmotion, setCustomEmotion] = useState('');
 
     useEffect(() => {
         setSelectedEmotion(initialEmotion || '');
