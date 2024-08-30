@@ -51,10 +51,7 @@ const CaseDetailsResponse = () => {
         },
         {
             name: 'Emotion',
-            selector: row => {
-                const emotions = ['Angry', 'Resentful', 'Anxious', 'Sad'];
-                return emotions[row.emotion - 1] || 'Unknown';
-            },
+            selector: row => row.emotion || '',
             sortable: true,
             center: true,
             width: '120px',

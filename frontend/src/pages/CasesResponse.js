@@ -136,10 +136,7 @@ const CasesResponse = () => {
         },
         {
             name: 'Emotion',
-            selector: row => {
-                const emotions = ['Angry', 'Resentful', 'Anxious', 'Sad'];
-                return emotions[row.emotion - 1];
-            },
+            selector: row => row.emotion,
             sortable: true,
             style: {
                 justifyContent: 'center', // Center the content in the column
