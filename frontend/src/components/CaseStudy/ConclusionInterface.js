@@ -11,69 +11,77 @@ const ConclusionInterface = ({ previousAnswers, character, onBackClick, onSaveCl
             {/* Left Card: Previous Answers */}
             <div className="flex-1 bg-white p-6 rounded-3xl shadow-lg h-96 overflow-y-auto">
                 <div className="text-left text-lg lg:text-xl space-y-2 font-semibold">
-                    <div className="flex flex-col">
-                        <span className="text-orange-500 lg:text-3xl">情緒選擇:</span>
-                        {(() => {
-                            switch(previousAnswers.selectedEmotion) {
-                                case '生氣的':
-                                    return (
-                                        <span className="inline-flex items-center">
-                                            <span className="text-2xl lg:text-3xl">😡</span>
-                                            <span className="text-lg lg:text-xl">生氣的</span>
-                                        </span>
-                                    );
-                                case '冤枉的':
-                                    return (
-                                        <span className="inline-flex items-center">
-                                            <span className="text-2xl lg:text-3xl">😔</span>
-                                            <span className="text-lg lg:text-xl">冤枉的</span>
-                                        </span>
-                                    );
-                                case '焦急的':
-                                    return (
-                                        <span className="inline-flex items-center">
-                                            <span className="text-2xl lg:text-3xl">😰</span>
-                                            <span className="text-lg lg:text-xl">焦急的</span>
-                                        </span>
-                                    );
-                                case '難過的':
-                                    return (
-                                        <span className="inline-flex items-center">
-                                            <span className="text-2xl lg:text-3xl">😭</span>
-                                            <span className="text-lg lg:text-xl">難過的</span>
-                                        </span>
-                                    );
-                                default:
-                                    return (
-                                        <span className="inline-flex items-center">
-                                            <span className="text-lg lg:text-xl">{previousAnswers.selectedEmotion}</span>
-                                        </span>
-                                    );
-                            }
-                        })()}
-                    </div>
-                    <div className="flex flex-col">
-                        <span className="text-orange-500 lg:text-3xl">理由:</span>
-                        <span>{previousAnswers.reasoning}</span>
-                    </div>
-                    <div className="flex flex-col">
-                        <span className="text-orange-500 lg:text-3xl">觀察:</span>
-                        <span>{previousAnswers.observe}</span>
-                    </div>
-                    <div className="flex flex-col">
-                        <span className="text-orange-500 lg:text-3xl">感受:</span>
-                        <span>{previousAnswers.feeling}</span>
-                    </div>
-                    <div className="flex flex-col">
-                        <span className="text-orange-500 lg:text-3xl">需要:</span>
-                        <span>{previousAnswers.need}</span>
-                    </div>
-                    <div className="flex flex-col">
-                        <span className="text-orange-500 lg:text-3xl">請求:</span>
-                        <span>{previousAnswers.request}</span>
+                    {/* Two-column container */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                        {/* Column 1 */}
+                        <div className="flex flex-col">
+                            <span className="text-orange-500 lg:text-3xl">情緒選擇:</span>
+                            {(() => {
+                                switch (previousAnswers.selectedEmotion) {
+                                    case '生氣的':
+                                        return (
+                                            <span className="inline-flex items-center">
+                                    <span className="text-2xl lg:text-3xl">😡</span>
+                                    <span className="text-lg lg:text-xl">生氣的</span>
+                                </span>
+                                        );
+                                    case '冤枉的':
+                                        return (
+                                            <span className="inline-flex items-center">
+                                    <span className="text-2xl lg:text-3xl">😔</span>
+                                    <span className="text-lg lg:text-xl">冤枉的</span>
+                                </span>
+                                        );
+                                    case '焦急的':
+                                        return (
+                                            <span className="inline-flex items-center">
+                                    <span className="text-2xl lg:text-3xl">😰</span>
+                                    <span className="text-lg lg:text-xl">焦急的</span>
+                                </span>
+                                        );
+                                    case '難過的':
+                                        return (
+                                            <span className="inline-flex items-center">
+                                    <span className="text-2xl lg:text-3xl">😭</span>
+                                    <span className="text-lg lg:text-xl">難過的</span>
+                                </span>
+                                        );
+                                    default:
+                                        return (
+                                            <span className="inline-flex items-center">
+                                    <span className="text-lg lg:text-xl">{previousAnswers.selectedEmotion}</span>
+                                </span>
+                                        );
+                                }
+                            })()}
+                        </div>
+
+                        <div className="flex flex-col">
+                            <span className="text-orange-500 lg:text-3xl">理由:</span>
+                            <span>{previousAnswers.reasoning}</span>
+                        </div>
+
+                        {/* Column 2 */}
+                        <div className="flex flex-col">
+                            <span className="text-orange-500 lg:text-3xl">觀察:</span>
+                            <span>{previousAnswers.observe}</span>
+                        </div>
+                        <div className="flex flex-col">
+                            <span className="text-orange-500 lg:text-3xl">感受:</span>
+                            <span>{previousAnswers.feeling}</span>
+                        </div>
+                        <div className="flex flex-col">
+                            <span className="text-orange-500 lg:text-3xl">需要:</span>
+                            <span>{previousAnswers.need}</span>
+                        </div>
+                        <div className="flex flex-col">
+                            <span className="text-orange-500 lg:text-3xl">請求:</span>
+                            <span>{previousAnswers.request}</span>
+                        </div>
                     </div>
                 </div>
             </div>
+
 
             {/* Right Card: Conclusion Question and Input */}
             <div className="flex-1 bg-white p-6 rounded-3xl shadow-lg justify-between">
