@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import Navbar from '../components/Navbar';
 import FadeIn from "../components/FadeIn";
 import { useNavigate } from "react-router-dom";
@@ -118,7 +118,7 @@ const CardMakerCreate = () => {
     const handleImageUpload = (e) => {
         const file = e.target.files ? e.target.files[0] : e.dataTransfer.files[0];
         if (file) {
-           if (file instanceof File && file.type.startsWith('image/')) {
+            if (file instanceof File && file.type.startsWith('image/')) {
                 setImageFile(file); // Store the original File object
                 const reader = new FileReader();
                 reader.onload = () => {
@@ -338,30 +338,27 @@ const CardMakerCreate = () => {
         <div className="min-h-screen flex flex-col" style={{ backgroundColor: '#fff4e3' }}>
             <Navbar role={role} />
             <Notification message={notificationMessage} type={notificationType} onClose={handleCloseNotification} />
-            <div className="flex-grow flex flex-col items-center justify-center text-black">
+            <div className="flex-grow flex flex-col items-center justify-center text-black px-4">
                 <FadeIn>
-                    <h1 className="text-5xl lg:text-7xl xl:text-8xl text-center font-bold mb-3">卡牌創作</h1>
+                    <h1 className="text-3xl md:text-5xl lg:text-7xl text-center font-bold mb-3">卡牌創作</h1>
                     <button
                         onClick={() => navigate(-1)}
-                        className="bg-gray-400 text-white font-bold py-2 px-6 rounded-full shadow-lg hover:bg-gray-500 transform hover:scale-110 active:scale-95 transition duration-300 ease-in-out text-lg lg:text-xl mb-3"
+                        className="bg-gray-400 text-white font-bold py-2 px-6 rounded-full shadow-lg hover:bg-gray-500 transform hover:scale-110 active:scale-95 transition duration-300 ease-in-out text-md md:text-lg lg:text-xl mb-3"
                     >
                         返回
                     </button>
 
-                    {/* Flex container to align card creation and user cards table side by side */}
-                    <div className="flex w-full max-w-5xl mx-auto">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 w-full max-w-6xl mx-auto">
                         {/* Card Creation Form */}
-                        <div className="flex-1 mb-3 w-full h-[52rem] rounded-2xl overflow-hidden shadow-lg border-gray-500 border-8 bg-[#ffffff] px-4">
+                        <div className="flex flex-col mb-3 w-full h-auto rounded-2xl overflow-hidden shadow-lg border-gray-500 border-8 bg-white px-4 py-4">
                             {/* Title Input */}
-                            <div className="w-full h-auto flex items-center justify-center">
-                                <input
-                                    type="text"
-                                    className="text-center mt-5 text-2xl shadow-lg rounded-full px-1 py-2 bg-gray-500 text-white focus:outline-none"
-                                    placeholder="在此輸入您的卡片標題"
-                                    value={title}
-                                    onChange={(e) => setTitle(e.target.value)}
-                                />
-                            </div>
+                            <input
+                                type="text"
+                                className="text-center mt-5 text-xl md:text-2xl shadow-lg rounded-full px-1 py-2 bg-gray-500 text-white focus:outline-none"
+                                placeholder="在此輸入您的卡片標題"
+                                value={title}
+                                onChange={(e) => setTitle(e.target.value)}
+                            />
 
                             {/* Image Upload */}
                             <div
@@ -387,89 +384,78 @@ const CardMakerCreate = () => {
                             </div>
 
                             {/* Textarea */}
-                            <div className="relative w-full h-40 mt-8 border-gray-500 border-8 bg-white rounded-2xl flex items-center justify-center">
-                                {error && <span className="text-red-500 text-center">{error}</span>}
-                                <textarea
-                                    className="w-full h-full p-3 rounded-2xl focus:outline-none text-2xl text-center"
-                                    placeholder="輸入情緒/對應的顏色"
-                                    rows="4"
-                                    value={text}
-                                    onChange={handleChange}
-                                    style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-                                ></textarea>
-                            </div>
+                            <textarea
+                                className="w-full h-32 md:h-40 mt-8 border-gray-500 border-8 bg-white rounded-2xl flex items-center justify-center focus:outline-none text-lg md:text-xl text-center"
+                                placeholder="輸入情緒/對應的顏色"
+                                rows="4"
+                                value={text}
+                                onChange={handleChange}
+                            ></textarea>
 
                             {/* Save Button */}
-                            <div className="flex justify-center mt-3">
-                                <button
-                                    onClick={handleSave}
-                                    className="bg-orange-500 text-white font-bold py-2 px-6 rounded-full shadow-lg hover:bg-orange-600 hover:scale-110 active:scale-95 transition duration-300 ease-in-out text-lg lg:text-3xl mb-3"
-                                >
-                                    保存卡片/下載
-                                </button>
-                            </div>
+                            <button
+                                onClick={handleSave}
+                                className="bg-orange-500 text-white font-bold py-2 px-6 rounded-full shadow-lg hover:bg-orange-600 hover:scale-110 active:scale-95 transition duration-300 ease-in-out text-md md:text-lg lg:text-xl mb-3 mt-4"
+                            >
+                                保存卡片/下載
+                            </button>
                         </div>
 
                         {/* User's Created Cards Table */}
-                        <div className="flex-1 w-[48rem] px-4">
-                            <div className="bg-white rounded-lg shadow-lg w-2xl">
-                                <div className="overflow-y-auto h-[51rem]">
-                                    {/* Combined table for header and body */}
-                                    <table className="min-w-full">
-                                        <thead>
-                                        <tr>
-                                            <th className="py-2 px-4 border-b">標題</th>
-                                            <th className="py-2 px-4 border-b">描述</th>
-                                            <th className="py-2 px-4 border-b">圖片</th>
-                                            <th className="py-2 px-4 border-b">操作</th>
+                        <div className="flex-1 bg-white rounded-lg shadow-lg mb-3">
+                            <div className="overflow-y-auto h-[51rem]">
+                                {/* Combined table for header and body */}
+                                <table className="min-w-full">
+                                    <thead>
+                                    <tr>
+                                        <th className="py-2 px-4 border-b">標題</th>
+                                        <th className="py-2 px-4 border-b">描述</th>
+                                        <th className="py-2 px-4 border-b">圖片</th>
+                                        <th className="py-2 px-4 border-b">操作</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {userCards.map((card, index) => (
+                                        <tr key={index} className="h-[8rem]"> {/* Set each row to have a fixed height */}
+                                            <td className="py-2 px-4 border-b text-center max-w-xs truncate" title={card.title}>
+                                                {card.title.length > 5 ? `${card.title.substring(0, 5)}...` : card.title}
+                                            </td>
+                                            <td className="py-2 px-4 border-b text-center max-w-xs truncate" title={card.description}>
+                                                {card.description.length > 5 ? `${card.description.substring(0, 5)}...` : card.description}
+                                            </td>
+                                            <td className="py-2 px-4 border-b text-center w-[10rem]">
+                                                <img
+                                                    src={`${process.env.REACT_APP_IMAGE_BASE_URL}/${card.image_path}`}
+                                                    alt={card.title}
+                                                    className="w-16 h-16 object-cover mx-auto"
+                                                />
+                                            </td>
+                                            <td className="py-2 px-4 border-b text-center w-[3rem]">
+                                                <div className="inline-flex -space-x-0.5 justify-center">
+                                                    <button
+                                                        onClick={() =>
+                                                            generateCardImage(
+                                                                card.title,
+                                                                card.description,
+                                                                `${process.env.REACT_APP_IMAGE_BASE_URL}/${card.image_path}`
+                                                            )
+                                                        }
+                                                        className="bg-blue-500 text-white py-1 px-2 rounded hover:bg-blue-600 flex items-center justify-center"
+                                                    >
+                                                        <FontAwesomeIcon icon={faDownload}/>
+                                                    </button>
+                                                    <button
+                                                        onClick={() => handleDeleteCard(card.id)}
+                                                        className="bg-red-500 text-white py-1 px-2 rounded hover:bg-red-600 flex items-center justify-center"
+                                                    >
+                                                        <FontAwesomeIcon icon={faTrash}/>
+                                                    </button>
+                                                </div>
+                                            </td>
                                         </tr>
-                                        </thead>
-                                        <tbody>
-                                        {userCards.map((card, index) => (
-                                            <tr key={index}
-                                                className="h-[8rem]"> {/* Set each row to have a fixed height */}
-                                                <td className="py-2 px-4 border-b text-center max-w-xs truncate"
-                                                    title={card.title}>
-                                                    {card.title.length > 5 ? `${card.title.substring(0, 5)}...` : card.title}
-                                                </td>
-                                                <td className="py-2 px-4 border-b text-center max-w-xs truncate"
-                                                    title={card.description}>
-                                                    {card.description.length > 5 ? `${card.description.substring(0, 5)}...` : card.description}
-                                                </td>
-                                                <td className="py-2 px-4 border-b text-center w-[10rem]"> {/* Set a fixed width for the image */}
-                                                    <img
-                                                        src={`${process.env.REACT_APP_IMAGE_BASE_URL}/${card.image_path}`}
-                                                        alt={card.title}
-                                                        className="w-16 h-16 object-cover mx-auto"
-                                                    />
-                                                </td>
-                                                <td className="py-2 px-4 border-b text-center w-[3rem]">
-                                                    <div className="inline-flex -space-x-0.5 justify-center">
-                                                        <button
-                                                            onClick={() =>
-                                                                generateCardImage(
-                                                                    card.title,
-                                                                    card.description,
-                                                                    `${process.env.REACT_APP_IMAGE_BASE_URL}/${card.image_path}`
-                                                                )
-                                                            }
-                                                            className="bg-blue-500 text-white py-1 px-2 rounded hover:bg-blue-600 flex items-center justify-center"
-                                                        >
-                                                            <FontAwesomeIcon icon={faDownload}/>
-                                                        </button>
-                                                        <button
-                                                            onClick={() => handleDeleteCard(card.id)}
-                                                            className="bg-red-500 text-white py-1 px-2 rounded hover:bg-red-600 flex items-center justify-center"
-                                                        >
-                                                            <FontAwesomeIcon icon={faTrash}/>
-                                                        </button>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                        </tbody>
-                                    </table>
-                                </div>
+                                    ))}
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>

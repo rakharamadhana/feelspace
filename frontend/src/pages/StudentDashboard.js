@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import Navbar from '../components/Navbar';
 import Card from '../components/Card';
 import FadeIn from "../components/FadeIn";
@@ -32,9 +32,9 @@ const StudentDashboard = () => {
             <FadeIn>
                 <Navbar role={role} />
                 <Notification message={notificationMessage} type={notificationType} onClose={handleCloseNotification} />
-                <div className="flex-grow flex flex-col items-center justify-center text-black">
-                    <h1 className="text-6xl lg:text-8xl xl:text-9xl font-bold mb-16">首頁</h1>
-                    <div className="flex space-x-6">
+                <div className="flex-grow flex flex-col items-center justify-center text-black px-4">
+                    <h1 className="text-4xl md:text-6xl lg:text-8xl font-bold mb-10 lg:mb-16">首頁</h1>
+                    <div className="flex flex-wrap justify-center space-x-3 space-y-6 lg:space-x-6 lg:space-y-0">
                         <Card
                             imageUrl={`${process.env.PUBLIC_URL}/assets/menu-1.png`}
                             text="案例探討"
@@ -43,7 +43,7 @@ const StudentDashboard = () => {
                             link="/case-study"
                             className={`${
                                 isTouched ? 'scale-95' : 'hover:scale-110'
-                            } transition transform duration-300 ease-in-out`}
+                            } transition transform duration-300 ease-in-out mx-2 md:mx-4`}
                             onTouchStart={() => setIsTouched(true)}
                             onTouchEnd={() => setIsTouched(false)}
                         />
@@ -56,11 +56,10 @@ const StudentDashboard = () => {
                             target="_blank"  // This will make the link open in a new tab
                             className={`${
                                 isTouched ? 'scale-95' : 'hover:scale-110'
-                            } transition transform duration-300 ease-in-out`}
+                            } transition transform duration-300 ease-in-out mx-2 md:mx-4`}
                             onTouchStart={() => setIsTouched(true)}
                             onTouchEnd={() => setIsTouched(false)}
                         />
-
                         <Card
                             imageUrl={`${process.env.PUBLIC_URL}/assets/menu-3.png`}
                             text="卡牌創作"
@@ -69,7 +68,7 @@ const StudentDashboard = () => {
                             link="/card-maker"
                             className={`${
                                 isTouched ? 'scale-95' : 'hover:scale-110'
-                            } transition transform duration-300 ease-in-out`}
+                            } transition transform duration-300 ease-in-out mx-2 md:mx-4`}
                             onTouchStart={() => setIsTouched(true)}
                             onTouchEnd={() => setIsTouched(false)}
                         />

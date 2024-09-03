@@ -42,22 +42,16 @@ const CaseStudy = () => {
         setNotificationType(''); // Clear the notification type
     };
 
-    // Calculate the min-width based on the number of cards
-    const cardWidth = 320; // Adjust this to the width of your cards
-    const spacing = 24; // Adjust this to the spacing between your cards (in px)
-    const minWidth = cases.length * (cardWidth + spacing) + 'px';
-
     return (
         <div className="min-h-screen flex flex-col" style={{ backgroundColor: '#fff4e3' }}>
             <Navbar role={role} />
             <div className="flex-grow flex flex-col items-center justify-center text-black">
                 <FadeIn>
                     <Notification message={notificationMessage} type={notificationType} onClose={handleCloseNotification} />
-                    <h1 className="text-6xl lg:text-8xl xl:text-9xl text-center font-bold mb-16">案例探討</h1>
-                    <div className="w-full max-w-6xl overflow-x-auto">
+                    <h1 className="text-4xl md:text-6xl lg:text-8xl xl:text-9xl text-center font-bold mb-16">案例探討</h1>
+                    <div className="w-full max-w-6xl overflow-x-auto px-4 py-6 md:px-8">
                         <div
-                            className="flex space-x-6 pb-4 px-4"
-                            style={{ minWidth: minWidth }}
+                            className="flex flex-wrap justify-center gap-6"
                         >
                             {cases.map(caseItem => (
                                 <Card

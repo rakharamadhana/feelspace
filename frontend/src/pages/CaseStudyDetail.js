@@ -210,7 +210,7 @@ const CaseStudyDetail = () => {
             <Navbar role={role} />
             <FadeIn>
 
-                <div className="flex flex-col items-center text-black">
+                <div className="flex flex-col items-center text-black mx-3">
                     {caseDetails ? (
                         <>
                             {selectedCharacter ? (
@@ -286,12 +286,6 @@ const CaseStudyDetail = () => {
                             ) : (
                                 <>
                                     <CaseTitle title="案例探討"/>
-                                    <button
-                                        onClick={() => navigate(-1)}
-                                        className="absolute left-16 top-36 bg-gray-400 text-white font-bold py-2 px-6 rounded-full shadow-lg hover:bg-gray-500 hover:scale-110 active:scale-95 transition duration-300 ease-in-out text-lg lg:text-xl"
-                                    >
-                                        返回
-                                    </button>
                                     <StoryTitleBox
                                         title={caseDetails.title}
                                         borderColor={caseDetails.borderColor}
