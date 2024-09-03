@@ -110,6 +110,12 @@ const CaseDetailsResponse = () => {
             sortable: true,
             center: true,
         },
+        {
+            name: 'Updated At',
+            selector: row => new Date(row.modified_at).toLocaleString(),
+            sortable: true,
+            center: true,
+        },
     ];
 
     return (

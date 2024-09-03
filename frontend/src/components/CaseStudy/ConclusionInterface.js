@@ -99,7 +99,7 @@ const ConclusionInterface = ({ previousAnswers, character, onBackClick, onSaveCl
                         onClick={() => onSaveClick(conclusionText)}
                         className="bg-yellow-500 text-white font-bold py-2 px-6 rounded-full shadow-lg hover:bg-yellow-600 hover:scale-110 active:scale-95 transition duration-300 ease-in-out text-lg lg:text-xl"
                     >
-                        完成
+                        儲存
                     </button>
                 </div>
             </div>

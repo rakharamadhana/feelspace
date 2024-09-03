@@ -205,6 +205,12 @@ const CasesResponse = () => {
                 justifyContent: 'center', // Center the content in the column
             },
         },
+        {
+            name: 'Updated At',
+            selector: row => new Date(row.modified_at).toLocaleString(),
+            sortable: true,
+            center: true,
+        },
     ];
 
 
