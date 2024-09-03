@@ -285,12 +285,13 @@ const CaseStudyDetail = () => {
                                 </>
                             ) : (
                                 <>
-                                    <CaseTitle title="案例探討"/>
+                                    <CaseTitle title="案例探討" />
                                     <StoryTitleBox
                                         title={caseDetails.title}
                                         borderColor={caseDetails.borderColor}
                                         textColor={caseDetails.textColor}
                                         bgColor="bg-white"
+                                        backButton={true}  // Set this to true to show the button
                                     />
                                     <div
                                         className={`flex flex-col lg:flex-row w-full max-w-6xl space-y-6 lg:space-y-0 lg:space-x-6 mb-8 transition-opacity duration-200 ${
