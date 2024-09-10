@@ -236,7 +236,7 @@ const CardMakerCreate = () => {
         // Title Background with Rounded Corners
         const cornerRadius = 25; // Adjust this value for more or less rounding
         const rectX = canvas.width / 2 - 150;
-        const rectY = 20;
+        const rectY = 25;
         const rectWidth = 300;
         const rectHeight = 50;
 
@@ -262,11 +262,11 @@ const CardMakerCreate = () => {
         ctx.fillText('感受卡', canvas.width / 2, rectY + rectHeight / 1.5); // Adjust the position
 
         // Image Box with Rounded Corners
-        const imageCornerRadius = 20; // Adjust this value for more or less rounding
+        const imageCornerRadius = 15; // Adjust this value for more or less rounding
         const imageX = 50;
         const imageY = 90;
         const imageWidth = canvas.width - 100; // Define the box width for the image
-        const imageHeight = 400; // Define the box height for the image
+        const imageHeight = 450; // Define the box height for the image
 
         // Clip the image to the rounded rectangle
         ctx.beginPath();
@@ -293,34 +293,29 @@ const CardMakerCreate = () => {
         img.src = imageSrc;
 
         img.onload = () => {
-            const aspectRatio = img.width / img.height;
-            let imgWidth, imgHeight;
+            const imageAspectRatio = img.width / img.height;
+            const frameAspectRatio = imageWidth / imageHeight;
+            let sourceX = 0, sourceY = 0, sourceWidth = img.width, sourceHeight = img.height;
 
-            // Adjust the image dimensions to fit within the image box while maintaining the aspect ratio
-            if (img.width > img.height) {
-                imgWidth = imageWidth;
-                imgHeight = imgWidth / aspectRatio;
+            // If the image aspect ratio is greater than the frame, crop horizontally
+            if (imageAspectRatio > frameAspectRatio) {
+                // Image is wider than the frame, crop the sides
+                sourceWidth = img.height * frameAspectRatio;
+                sourceX = (img.width - sourceWidth) / 2; // Center the crop horizontally
             } else {
-                imgHeight = imageHeight;
-                imgWidth = imgHeight * aspectRatio;
+                // Image is taller than the frame, crop the top and bottom
+                sourceHeight = img.width / frameAspectRatio;
+                sourceY = (img.height - sourceHeight) / 2; // Center the crop vertically
             }
 
-            // Ensure the image does not overflow the box
-            if (imgHeight > imageHeight) {
-                imgHeight = imageHeight;
-                imgWidth = imgHeight * aspectRatio;
-            }
-
-            if (imgWidth > imageWidth) {
-                imgWidth = imageWidth;
-                imgHeight = imgWidth / aspectRatio;
-            }
-
-            // Center the image within the box
-            const drawX = imageX + (imageWidth - imgWidth) / 2;
-            const drawY = imageY + (imageHeight - imgHeight) / 2;
-
-            ctx.drawImage(img, drawX, drawY, imgWidth, imgHeight);
+            // Draw the image, filling the entire frame and cropping the excess
+            ctx.drawImage(
+                img,
+                sourceX, sourceY, // Start cropping from (sourceX, sourceY)
+                sourceWidth, sourceHeight, // Crop dimensions
+                imageX, imageY, // Destination position on the canvas
+                imageWidth, imageHeight // Destination dimensions on the canvas
+            );
 
             ctx.restore(); // Restore to previous state to draw the border
 
@@ -330,9 +325,9 @@ const CardMakerCreate = () => {
             ctx.stroke(); // Stroke the rounded rectangle
 
             // Description Box with Rounded Corners
-            const descCornerRadius = 20; // Adjust this value for more or less rounding
+            const descCornerRadius = 15; // Adjust this value for more or less rounding
             const descX = 50;
-            const descY = 510;
+            const descY = 575;
             const descWidth = canvas.width - 100;
             const descHeight = 150;
 
