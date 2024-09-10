@@ -259,7 +259,7 @@ const CardMakerCreate = () => {
         ctx.font = "30px Arial"; // Match the font and size
         ctx.fillStyle = "#fff"; // White text color
         ctx.textAlign = "center";
-        ctx.fillText(title, canvas.width / 2, rectY + rectHeight / 1.5); // Adjust the position
+        ctx.fillText('感受卡', canvas.width / 2, rectY + rectHeight / 1.5); // Adjust the position
 
         // Image Box with Rounded Corners
         const imageCornerRadius = 20; // Adjust this value for more or less rounding
