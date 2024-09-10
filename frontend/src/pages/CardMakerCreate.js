@@ -213,11 +213,11 @@ const CardMakerCreate = () => {
             });
 
         // Optionally, generate the card image locally and download it
-        generateCardImage(text, imagePreview); // Ensure this function handles image generation and download
+        generateCardImage(title, text, imagePreview); // Ensure this function handles image generation and download
     };
 
     // Function to generate and download the card image
-    const generateCardImage = (text, imageSrc) => {
+    const generateCardImage = (title, text, imageSrc) => {
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
 
