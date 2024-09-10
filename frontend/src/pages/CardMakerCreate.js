@@ -11,7 +11,7 @@ const CardMakerCreate = () => {
     const role = localStorage.getItem('role');
     const navigate = useNavigate();
     const [text, setText] = useState('');
-    const [title, setTitle] = useState('');
+    const [title, setTitle] = useState('感受卡');
     const [error, setError] = useState('');
     const [imagePreview, setImagePreview] = useState(null);
     const [imageFile, setImageFile] = useState(null);
@@ -148,7 +148,7 @@ const CardMakerCreate = () => {
     };
 
     const handleSave = () => {
-        if (!title || !imageFile || !text) {
+        if ( !imageFile || !text ) {
             setError('All fields are required.');
             return;
         }
@@ -161,7 +161,25 @@ const CardMakerCreate = () => {
         }
 
         const formData = new FormData();
-        formData.append('title', title);
+
+        // Get the current date
+        const now = new Date();
+
+        // Extract individual components
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed, so add 1
+        const day = String(now.getDate()).padStart(2, '0');
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        const seconds = String(now.getSeconds()).padStart(2, '0');
+
+        // Format the date and time as "YYYYMMDD-HHMMSS"
+        const creationDate = `${year}${month}${day}-${hours}${minutes}${seconds}`;
+
+        // Create the title with the format "感受卡-<creationdate>"
+        const title = `感受卡-${creationDate}`;
+
+        formData.append('title', title); // Ensure this is the original file object
         formData.append('image', imageFile); // Ensure this is the original file object
         formData.append('description', text);
 
@@ -185,7 +203,6 @@ const CardMakerCreate = () => {
                 fetchUserCards();
 
                 // Clear the form fields after saving
-                setTitle('');
                 setText('');
                 setImageFile(null);
                 setImagePreview(null);
@@ -196,11 +213,11 @@ const CardMakerCreate = () => {
             });
 
         // Optionally, generate the card image locally and download it
-        generateCardImage(title, text, imagePreview); // Ensure this function handles image generation and download
+        generateCardImage(text, imagePreview); // Ensure this function handles image generation and download
     };
 
     // Function to generate and download the card image
-    const generateCardImage = (title, text, imageSrc) => {
+    const generateCardImage = (text, imageSrc) => {
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
 
@@ -248,8 +265,8 @@ const CardMakerCreate = () => {
         const imageCornerRadius = 20; // Adjust this value for more or less rounding
         const imageX = 50;
         const imageY = 90;
-        const imageWidth = canvas.width - 100;
-        const imageHeight = 400;
+        const imageWidth = canvas.width - 100; // Define the box width for the image
+        const imageHeight = 400; // Define the box height for the image
 
         // Clip the image to the rounded rectangle
         ctx.beginPath();
@@ -272,13 +289,38 @@ const CardMakerCreate = () => {
 
         // Draw the uploaded image inside the clipped area
         const img = new Image();
-        img.crossOrigin = "anonymous"; // Add this line
+        img.crossOrigin = "anonymous"; // Add this line to ensure cross-origin image loading
         img.src = imageSrc;
 
         img.onload = () => {
             const aspectRatio = img.width / img.height;
-            const imgHeight = imageWidth / aspectRatio;
-            ctx.drawImage(img, imageX, imageY, imageWidth, imgHeight);
+            let imgWidth, imgHeight;
+
+            // Adjust the image dimensions to fit within the image box while maintaining the aspect ratio
+            if (img.width > img.height) {
+                imgWidth = imageWidth;
+                imgHeight = imgWidth / aspectRatio;
+            } else {
+                imgHeight = imageHeight;
+                imgWidth = imgHeight * aspectRatio;
+            }
+
+            // Ensure the image does not overflow the box
+            if (imgHeight > imageHeight) {
+                imgHeight = imageHeight;
+                imgWidth = imgHeight * aspectRatio;
+            }
+
+            if (imgWidth > imageWidth) {
+                imgWidth = imageWidth;
+                imgHeight = imgWidth / aspectRatio;
+            }
+
+            // Center the image within the box
+            const drawX = imageX + (imageWidth - imgWidth) / 2;
+            const drawY = imageY + (imageHeight - imgHeight) / 2;
+
+            ctx.drawImage(img, drawX, drawY, imgWidth, imgHeight);
 
             ctx.restore(); // Restore to previous state to draw the border
 
@@ -334,6 +376,7 @@ const CardMakerCreate = () => {
         };
     };
 
+
     return (
         <div className="min-h-screen flex flex-col" style={{ backgroundColor: '#fff4e3' }}>
             <Navbar role={role} />
@@ -355,10 +398,10 @@ const CardMakerCreate = () => {
                             <input
                                 type="text"
                                 className="text-center mt-5 text-xl md:text-2xl shadow-lg rounded-full px-1 py-2 bg-gray-500 text-white focus:outline-none"
-                                placeholder="在此輸入您的卡片標題"
-                                value={title}
-                                onChange={(e) => setTitle(e.target.value)}
+                                value={title} // The title state is set to "感受卡"
+                                readOnly // Makes the input field uneditable by the user
                             />
+
 
                             {/* Image Upload */}
                             <div
