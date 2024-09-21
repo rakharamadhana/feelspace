@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import * as XLSX from 'xlsx';
 import api from '../api';  // Import the API instance
 import SideNav from '../components/SideNav';
 import DataTable from 'react-data-table-component'; // Import DataTable
@@ -104,6 +105,82 @@ const CasesResponse = () => {
             );
         });
         setFilteredResponses(filtered);
+    };
+
+    // Function to download CSV
+    const downloadCSV = () => {
+        // Define CSV headers
+        const headers = [
+            'Case ID', 'Character Name', 'Student Name', 'Emotion', 'Reasoning',
+            'Observe', 'Feeling', 'Need', 'Request', 'Conclusion', 'Created At', 'Updated At'
+        ];
+
+        // Map over filteredResponses to generate CSV rows
+        const rows = filteredResponses.map(row => [
+            row.case_id,
+            row.character_name,
+            row.created_by_name,
+            row.emotion,
+            `"${row.reasoning}"`,  // Wrap text in quotes to handle commas
+            `"${row.observe}"`,
+            `"${row.feeling}"`,
+            `"${row.need}"`,
+            `"${row.request}"`,
+            `"${row.conclusion}"`,
+            new Date(row.created_at).toLocaleString(),
+            new Date(row.modified_at).toLocaleString()
+        ]);
+
+        // Combine headers and rows into a CSV formatted string
+        const csvContent = [headers, ...rows]
+            .map(e => e.join(","))
+            .join("\n");
+
+        // Create a blob from the CSV content
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+
+        // Create a temporary link element to trigger download
+        const link = document.createElement('a');
+        const url = URL.createObjectURL(blob);
+        link.href = url;
+        link.setAttribute('download', 'cases_responses.csv'); // Set the file name
+        document.body.appendChild(link);
+        link.click(); // Programmatically trigger the download
+        document.body.removeChild(link); // Clean up by removing the link element
+    };
+
+    const downloadExcel = () => {
+        // Prepare data: Define the headers and rows
+        const headers = [
+            'Case ID', 'Character Name', 'Student Name', 'Emotion', 'Reasoning',
+            'Observe', 'Feeling', 'Need', 'Request', 'Conclusion', 'Created At', 'Updated At'
+        ];
+
+        const rows = filteredResponses.map(row => ({
+            'Case ID': row.case_id,
+            'Character Name': row.character_name,
+            'Student Name': row.created_by_name,
+            'Emotion': row.emotion,
+            'Reasoning': row.reasoning,
+            'Observe': row.observe,
+            'Feeling': row.feeling,
+            'Need': row.need,
+            'Request': row.request,
+            'Conclusion': row.conclusion,
+            'Created At': new Date(row.created_at).toLocaleString(),
+            'Updated At': new Date(row.modified_at).toLocaleString()
+        }));
+
+        // Combine headers and rows into a single dataset
+        const worksheetData = [headers, ...rows];
+
+        // Create a new worksheet and workbook
+        const worksheet = XLSX.utils.json_to_sheet(rows);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'Cases Responses');
+
+        // Generate and download the Excel file
+        XLSX.writeFile(workbook, 'cases_responses.xlsx');
     };
 
     // Define columns for DataTable
@@ -217,7 +294,7 @@ const CasesResponse = () => {
     return (
         <div className="min-h-screen flex">
             <SideNav role={role} />
-            <div className="flex-grow p-10 flex flex-col items-start" style={{ backgroundColor: '#fff4e3' }}>
+            <div className="flex-grow p-10 flex flex-col items-start" style={{backgroundColor: '#fff4e3'}}>
                 <h1 className="text-3xl font-bold mb-6">Cases Responses</h1>
                 {/* Filter Inputs */}
                 <div className="mb-4 flex space-x-4">
@@ -265,6 +342,18 @@ const CasesResponse = () => {
                         className="bg-orange-500 text-white py-2 px-4 rounded-full"
                     >
                         Filter
+                    </button>
+                    <button
+                        onClick={downloadCSV}
+                        className="bg-blue-500 text-white py-2 px-4 rounded-full"
+                    >
+                        Export as CSV
+                    </button>
+                    <button
+                        onClick={downloadExcel}
+                        className="bg-green-500 text-white py-2 px-4 rounded-full"
+                    >
+                        Export as Excel
                     </button>
                 </div>
                 <div className="w-full max-w-[50rem] xl:max-w-[100rem]">
