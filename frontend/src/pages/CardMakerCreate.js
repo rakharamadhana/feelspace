@@ -424,7 +424,7 @@ const CardMakerCreate = () => {
                             {/* Textarea */}
                             <textarea
                                 className="w-full h-32 md:h-40 mt-8 border-gray-500 border-8 bg-white rounded-2xl flex items-center justify-center focus:outline-none text-lg md:text-xl text-center"
-                                placeholder="輸入情緒/對應的顏色"
+                                placeholder="輸入情緒"
                                 rows="4"
                                 value={text}
                                 onChange={handleChange}
