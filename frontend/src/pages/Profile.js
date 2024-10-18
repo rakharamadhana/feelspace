@@ -119,6 +119,7 @@ const Profile = () => {
                     value={oldPassword}
                     onChange={(e) => setOldPassword(e.target.value)}
                     className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    disabled={true}
                 />
                 {errors.oldPassword && <p className="text-red-500 text-sm">{errors.oldPassword}</p>}
             </div>
@@ -130,6 +131,7 @@ const Profile = () => {
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
                     className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    disabled={true}
                 />
                 {errors.newPassword && <p className="text-red-500 text-sm">{errors.newPassword}</p>}
             </div>
@@ -142,6 +144,7 @@ const Profile = () => {
             <button
                 onClick={handleChangePassword}
                 className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition duration-300 mb-4"
+                disabled={true}
             >
                 Change Password
             </button>
