@@ -5,6 +5,9 @@
   "license": "MIT",
   "scripts": {
     "start": "concurrently \"pnpm start-frontend\" \"pnpm start-backend\"",
+    "install-all": "concurrently \"pnpm install\" \"pnpm install-frontend\" \"pnpm install-backend\"",
+    "install-frontend": "pnpm -C frontend install",
+    "install-backend": "pnpm -C backend install",
     "start-frontend": "pnpm -C frontend start",
     "start-backend": "pnpm -C backend start",
     "build": "pnpm -C frontend build prod"
