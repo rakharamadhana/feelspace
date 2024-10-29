@@ -4,7 +4,7 @@ import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 import { Fragment } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHome, faUser } from '@fortawesome/free-solid-svg-icons';
+import { faHome, faTableList, faUser } from '@fortawesome/free-solid-svg-icons';
 import ProfileModal from '../components/ProfileModal'; // Import your Profile component as a modal
 
 function classNames(...classes) {
@@ -25,8 +25,17 @@ const Navbar = () => {
         {
             name: 'Home',
             href: `/${studentRole}-dashboard`,
-            current: location.pathname === `/${studentRole}-dashboard`
+            current: location.pathname === `/${studentRole}-dashboard`,
+            color: 'bg-orange-500 text-white hover:bg-orange-700',
+            target: '_self' // Same tab
         },
+        {
+            name: '問卷表單',
+            href: `https://forms.gle/HDSeFnsuQS394FQ69`, // Change this href to the correct path
+            current: false, // Not linked to the current location
+            color: 'bg-blue-500 text-white hover:bg-blue-700', // Unique color for this button
+            target: '_blank' // Opens in a new tab
+        }
     ];
 
     const handleLogout = () => {
@@ -61,13 +70,15 @@ const Navbar = () => {
                                             <Link
                                                 key={item.name}
                                                 to={item.href}
+                                                target={item.target} // Open in new tab
+                                                rel={item.target === '_blank' ? 'noopener noreferrer' : undefined} // Add security for new tab links
                                                 className={classNames(
                                                     item.current
                                                         ? 'bg-orange-700 text-white'
-                                                        : `bg-orange-500 text-white hover:bg-orange-700 hover:text-white ${
+                                                        : `${item.color} ${
                                                             isTouched ? 'scale-95' : 'hover:scale-110'
                                                         } active:scale-95 transition duration-300 ease-in-out`,
-                                                    item.name === 'Home'
+                                                    item.name === 'Home' || item.name === 'New Tab Button'
                                                         ? 'rounded-full px-6 py-3 flex items-center space-x-2 text-md font-bold'
                                                         : 'rounded-md px-3 py-2 text-sm font-medium'
                                                 )}
@@ -76,7 +87,10 @@ const Navbar = () => {
                                                 onTouchEnd={() => setIsTouched(false)}
                                             >
                                                 {item.name === 'Home' && (
-                                                    <FontAwesomeIcon icon={faHome} className="mr-2 text-xl" />
+                                                    <FontAwesomeIcon icon={faHome} className="mr-2 text-xl"/>
+                                                )}
+                                                {item.name === '問卷表單' && (
+                                                    <FontAwesomeIcon icon={faTableList} className="mr-2 text-xl"/>
                                                 )}
                                                 {item.name}
                                             </Link>
