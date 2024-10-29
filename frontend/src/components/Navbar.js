@@ -78,7 +78,7 @@ const Navbar = () => {
                                                         : `${item.color} ${
                                                             isTouched ? 'scale-95' : 'hover:scale-110'
                                                         } active:scale-95 transition duration-300 ease-in-out`,
-                                                    item.name === 'Home' || item.name === 'New Tab Button'
+                                                    item.name === 'Home' || item.name === '問卷表單'
                                                         ? 'rounded-full px-6 py-3 flex items-center space-x-2 text-md font-bold'
                                                         : 'rounded-md px-3 py-2 text-sm font-medium'
                                                 )}
