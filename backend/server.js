@@ -531,6 +531,7 @@ apiRouter.get('/cases/details/all', verifyToken, (req, res) => {
         SELECT
             case_details.*,
             users.name AS created_by_name,
+            users.email AS created_by_email,
             case_characters.character_name
         FROM
             case_details

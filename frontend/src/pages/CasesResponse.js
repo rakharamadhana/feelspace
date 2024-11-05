@@ -111,7 +111,7 @@ const CasesResponse = () => {
     const downloadCSV = () => {
         // Define CSV headers
         const headers = [
-            'Case ID', 'Character Name', 'Student Name', 'Emotion', 'Reasoning',
+            'Case ID', 'Character Name', 'Student Email','Student Name', 'Emotion', 'Reasoning',
             'Observe', 'Feeling', 'Need', 'Request', 'Conclusion', 'Created At', 'Updated At'
         ];
 
@@ -119,6 +119,7 @@ const CasesResponse = () => {
         const rows = filteredResponses.map(row => [
             row.case_id,
             row.character_name,
+            row.created_by_email,
             row.created_by_name,
             row.emotion,
             `"${row.reasoning}"`,  // Wrap text in quotes to handle commas
@@ -152,13 +153,14 @@ const CasesResponse = () => {
     const downloadExcel = () => {
         // Prepare data: Define the headers and rows
         const headers = [
-            'Case ID', 'Character Name', 'Student Name', 'Emotion', 'Reasoning',
+            'Case ID', 'Character Name', 'Student Email', 'Student Name', 'Emotion', 'Reasoning',
             'Observe', 'Feeling', 'Need', 'Request', 'Conclusion', 'Created At', 'Updated At'
         ];
 
         const rows = filteredResponses.map(row => ({
             'Case ID': row.case_id,
             'Character Name': row.character_name,
+            'Student Email': row.created_by_email,
             'Student Name': row.created_by_name,
             'Emotion': row.emotion,
             'Reasoning': row.reasoning,
@@ -202,6 +204,14 @@ const CasesResponse = () => {
                 justifyContent: 'center', // Center the content in the column
             },
             width: '150px',
+        },
+        {
+            name: 'Student Email',
+            selector: row => row.created_by_email, // Display the user's name
+            sortable: true,
+            style: {
+                justifyContent: 'center', // Center the content in the column
+            },
         },
         {
             name: 'Student Name',
