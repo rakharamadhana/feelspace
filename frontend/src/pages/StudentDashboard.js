@@ -52,7 +52,7 @@ const StudentDashboard = () => {
                             text="桌遊專區"
                             bgColor="bg-blue-300"
                             textColor="text-white"
-                            link="https://playingcards.io/aqwqfg"
+                            link="https://playingcards.io/"
                             target="_blank"  // This will make the link open in a new tab
                             className={`${
                                 isTouched ? 'scale-95' : 'hover:scale-110'
