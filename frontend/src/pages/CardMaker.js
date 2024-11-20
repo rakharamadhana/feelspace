@@ -19,7 +19,7 @@ const CardMaker = () => {
                         )}
                         {role === 'Student-Exp' && (
                             <Card imageUrl={`${process.env.PUBLIC_URL}/assets/image.png`} text="AI工具"
-                                  borderColor="border-blue-300" textColor="text-blue-300" link="https://www.freepik.com/pikaso/ai-image-generator?style=noStyle&submit=1#from_element=landing_tti" target="_blank" simple={true}/>
+                                  borderColor="border-blue-300" textColor="text-blue-300" link="https://www.adobe.com/tw/products/firefly.html" target="_blank" simple={true}/>
                         )}
                         <Card imageUrl={`${process.env.PUBLIC_URL}/assets/image.png`} text="卡牌製作"
                               borderColor="border-green-300" textColor="text-green-300" link="/card-maker/create" simple={true}/>
