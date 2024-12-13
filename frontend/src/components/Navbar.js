@@ -31,7 +31,11 @@ const Navbar = () => {
         },
         {
             name: '問卷表單',
-            href: `https://docs.google.com/forms/d/e/1FAIpQLSc2lUUTH0QhmnInkVKDr4jIsme2dm7M1KutsmKEcQi7UUyZ8w/viewform`, // Change this href to the correct path
+            href: role === 'Student-Exp'
+                ? 'https://docs.google.com/forms/d/e/1FAIpQLSeDCZjsyV3OiOJlcbcolo-_6kaUsJfs9hmMoBE9bFYxJ_gp_A/viewform?usp=sharing'
+                : role === 'Student-Ctrl'
+                    ? 'https://docs.google.com/forms/d/e/1FAIpQLSesAPBOFwo2d5smJgePZ7Z_AYJzhX7-_gQODlB2RTHHTkf5Bw/viewform?usp=sharing'
+                    : '#', // Default URL
             current: false, // Not linked to the current location
             color: 'bg-blue-500 text-white hover:bg-blue-700', // Unique color for this button
             target: '_blank' // Opens in a new tab
