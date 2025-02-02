@@ -96,11 +96,11 @@ const CardMakerCreate = () => {
         if (chineseCharCount > 0 && isEnglish) {
             setError('You cannot mix Chinese characters with English words.');
         } else if (chineseCharCount > 0) {
-            if (chineseCharCount <= 5) {
+            if (chineseCharCount <= 300) {
                 setText(inputText);
                 setError('');
             } else {
-                setError('您只能輸入最多5個漢字');
+                setError('您只能輸入最多300個漢字');
             }
         } else if (isEnglish) {
             const wordCount = inputText.split(/\s+/).filter(word => word.length > 0).length;
