@@ -11,7 +11,7 @@ const CardMakerCreate = () => {
     const role = localStorage.getItem('role');
     const navigate = useNavigate();
     const [text, setText] = useState('');
-    const [title, setTitle] = useState('感受卡');
+    const [title, setTitle] = useState('事件卡');
     const [error, setError] = useState('');
     const [imagePreview, setImagePreview] = useState(null);
     const [imageFile, setImageFile] = useState(null);
@@ -96,11 +96,11 @@ const CardMakerCreate = () => {
         if (chineseCharCount > 0 && isEnglish) {
             setError('You cannot mix Chinese characters with English words.');
         } else if (chineseCharCount > 0) {
-            if (chineseCharCount <= 300) {
+            if (chineseCharCount <= 200) {
                 setText(inputText);
                 setError('');
             } else {
-                setError('您只能輸入最多300個漢字');
+                setError('您只能輸入最多200個漢字');
             }
         } else if (isEnglish) {
             const wordCount = inputText.split(/\s+/).filter(word => word.length > 0).length;
@@ -259,14 +259,14 @@ const CardMakerCreate = () => {
         ctx.font = "30px Arial"; // Match the font and size
         ctx.fillStyle = "#fff"; // White text color
         ctx.textAlign = "center";
-        ctx.fillText('感受卡', canvas.width / 2, rectY + rectHeight / 1.5); // Adjust the position
+        ctx.fillText('事件卡', canvas.width / 2, rectY + rectHeight / 1.5); // Adjust the position
 
         // Image Box with Rounded Corners
         const imageCornerRadius = 15; // Adjust this value for more or less rounding
         const imageX = 50;
         const imageY = 90;
         const imageWidth = canvas.width - 100; // Define the box width for the image
-        const imageHeight = 450; // Define the box height for the image
+        const imageHeight = 300; // Define the box height for the image
 
         // Clip the image to the rounded rectangle
         ctx.beginPath();
@@ -327,9 +327,9 @@ const CardMakerCreate = () => {
             // Description Box with Rounded Corners
             const descCornerRadius = 15; // Adjust this value for more or less rounding
             const descX = 50;
-            const descY = 575;
+            const descY = 425;
             const descWidth = canvas.width - 100;
-            const descHeight = 150;
+            const descHeight = 325;
 
             ctx.beginPath();
             ctx.moveTo(descX + descCornerRadius, descY);
@@ -354,8 +354,32 @@ const CardMakerCreate = () => {
             // Description Text
             ctx.font = "20px Arial"; // Match the font and size
             ctx.fillStyle = "#000"; // Black text color
-            ctx.textAlign = "center";
-            ctx.fillText(text, canvas.width / 2, descY + descHeight / 2 + 10); // Centered text
+            ctx.textAlign = "left"; // Start from the left
+            ctx.textBaseline = "top"; // Align text to the top
+
+            // Function to wrap text
+            const wrapText = (context, text, x, y, maxWidth, lineHeight) => {
+                let words = text.split(""); // Chinese characters don't have spaces, so split per character
+                let line = "";
+                let yOffset = 0;
+
+                for (let i = 0; i < words.length; i++) {
+                    let testLine = line + words[i];
+                    let testWidth = context.measureText(testLine).width;
+
+                    if (testWidth > maxWidth && i > 0) {
+                        context.fillText(line, x, y + yOffset);
+                        line = words[i]; // Start new line
+                        yOffset += lineHeight; // Move down
+                    } else {
+                        line = testLine;
+                    }
+                }
+                context.fillText(line, x, y + yOffset); // Draw remaining text
+            };
+
+            // Apply wrapped text inside the description box
+            wrapText(ctx, text, descX + 10, descY + 10, descWidth - 20, 30);
 
             // Download the card as an image locally
             canvas.toBlob((blob) => {
@@ -400,7 +424,7 @@ const CardMakerCreate = () => {
 
                             {/* Image Upload */}
                             <div
-                                className={`relative w-full h-96 mt-8 border-gray-500 border-8 bg-white rounded-2xl flex items-center justify-center overflow-hidden ${isDragging ? 'bg-gray-200' : 'bg-white'}`}
+                                className={`relative w-full h-72 mt-8 border-gray-500 border-8 bg-white rounded-2xl flex items-center justify-center overflow-hidden ${isDragging ? 'bg-gray-200' : 'bg-white'}`}
                                 onDragOver={handleDragOver}
                                 onDragLeave={handleDragLeave}
                                 onDrop={handleDrop}
@@ -423,7 +447,7 @@ const CardMakerCreate = () => {
 
                             {/* Textarea */}
                             <textarea
-                                className="w-full h-32 md:h-40 mt-8 border-gray-500 border-8 bg-white rounded-2xl flex items-center justify-center focus:outline-none text-lg md:text-xl text-center"
+                                className="w-full h-32 md:h-40 mt-8 border-gray-500 border-8 bg-white rounded-2xl flex items-start justify-start focus:outline-none text-lg md:text-xl text-start"
                                 placeholder="輸入情緒"
                                 rows="4"
                                 value={text}

@@ -103,10 +103,15 @@ const storage = multer.diskStorage({
 
 const upload = multer({
     storage: storage,
-    limits: {
-        fileSize: 5 * 1024 * 1024, // Set a limit for file size (5 MB in this case)
+    limits: { fileSize: 10 * 1024 * 1024 }, // 5MB limit
+    fileFilter: function (req, file, cb) {
+        if (!file.mimetype.startsWith("image/")) {
+            return cb(new Error("Only image files are allowed!"), false);
+        }
+        cb(null, true);
     }
 });
+
 
 const verifyTokenWithJWT = (token, req, res, next) => {
     jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
