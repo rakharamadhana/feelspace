@@ -176,8 +176,8 @@ const CardMakerCreate = () => {
         // Format the date and time as "YYYYMMDD-HHMMSS"
         const creationDate = `${year}${month}${day}-${hours}${minutes}${seconds}`;
 
-        // Create the title with the format "感受卡-<creationdate>"
-        const title = `感受卡-${creationDate}`;
+        // Create the title with the format "事件卡-<creationdate>"
+        const title = `事件卡-${creationDate}`;
 
         formData.append('title', title); // Ensure this is the original file object
         formData.append('image', imageFile); // Ensure this is the original file object
@@ -222,7 +222,7 @@ const CardMakerCreate = () => {
         const ctx = canvas.getContext('2d');
 
         canvas.width = 600; // Match the card's width
-        canvas.height = 800; // Match the card's height
+        canvas.height = 908; // Match the card's height
 
         // Background
         ctx.fillStyle = "#fff4e3"; // Background color of the card
@@ -448,7 +448,7 @@ const CardMakerCreate = () => {
                             {/* Textarea */}
                             <textarea
                                 className="w-full h-32 md:h-40 mt-8 border-gray-500 border-8 bg-white rounded-2xl flex items-start justify-start focus:outline-none text-lg md:text-xl text-start"
-                                placeholder="輸入情緒"
+                                placeholder="輸入小組發想衝突故事"
                                 rows="4"
                                 value={text}
                                 onChange={handleChange}

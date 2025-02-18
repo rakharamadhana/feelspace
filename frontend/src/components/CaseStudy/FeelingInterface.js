@@ -10,7 +10,7 @@ const FeelingInterface = ({ character, onBackClick, onNextClick, initialValue })
     const feelingQuestion = `如果你是${character.character_name}，該如何運用非暴力溝通的「感受」說明自己情緒的狀況呢？`;
 
     return (
-        <div className="flex-1 bg-white p-6 rounded-3xl h-96 shadow-lg">
+        <div className="flex-1 bg-white p-6 rounded-3xl h-max shadow-lg">
             <div className="flex items-center justify-between text-xl lg:text-2xl mb-4">
                 <span className="text-gray-500">觀察</span>
                 <div className="flex-grow border-t-2 border-gray-300 mx-2"></div>
@@ -22,6 +22,9 @@ const FeelingInterface = ({ character, onBackClick, onNextClick, initialValue })
             </div>
             <p className="text-lg lg:text-xl font-semibold mb-4">
                 {feelingQuestion}
+            </p>
+            <p className="text-lg lg:text-xl font-semibold mb-4">
+                提示：我觀察/看到/聽到你.....
             </p>
             <textarea
                 className="w-full h-36 p-3 border rounded-2xl focus:outline-none focus:ring-2 focus:ring-yellow-500"
