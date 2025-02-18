@@ -388,7 +388,7 @@ apiRouter.post('/roles', verifyToken, (req, res) => {
 });
 
 apiRouter.get('/cases', verifyToken,(req, res) => {
-    const query = 'SELECT id, title, borderColor, textColor, story FROM cases';
+    const query = 'SELECT id, title, borderColor, textColor, story FROM cases WHERE is_active = 1';
     db.query(query, (error, results) => {
         if (error) {
             console.error('Error fetching case studies:', error);
