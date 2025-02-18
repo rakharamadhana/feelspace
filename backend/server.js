@@ -89,6 +89,8 @@ const storage = multer.diskStorage({
 
         const uploadDir = path.join(__dirname, 'uploads', userId, currentDate); // Construct the path as user_id/date
 
+        console.log("Upload Directory Path:", uploadDir);
+
         // Create the directory if it doesn't exist
         if (!fs.existsSync(uploadDir)) {
             fs.mkdirSync(uploadDir, { recursive: true });
@@ -97,7 +99,9 @@ const storage = multer.diskStorage({
         cb(null, uploadDir); // Set the upload directory
     },
     filename: function (req, file, cb) {
-        cb(null, `${Date.now()}-${file.originalname}`); // Use a unique filename
+        const uniqueFileName = `${Date.now()}-${file.originalname}`;
+        console.log("Saving File:", uniqueFileName);
+        cb(null, uniqueFileName);
     }
 });
 
