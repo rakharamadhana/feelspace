@@ -23,8 +23,8 @@ const FeelingInterface = ({ character, onBackClick, onNextClick, initialValue })
             <p className="text-lg lg:text-xl font-semibold mb-4">
                 {feelingQuestion}
             </p>
-            <p className="text-lg lg:text-xl font-semibold mb-4">
-                提示：我觀察/看到/聽到你.....
+            <p className="text-lg lg:text-xl font-semibold mb-4 text-orange-500">
+                提示：我感到/感覺/心情是.....
             </p>
             <textarea
                 className="w-full h-36 p-3 border rounded-2xl focus:outline-none focus:ring-2 focus:ring-yellow-500"

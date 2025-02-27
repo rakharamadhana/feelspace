@@ -23,7 +23,7 @@ const ObserveInterface = ({ character, onBackClick, onNextClick, initialValue })
             <p className="text-lg lg:text-xl font-semibold mb-4">
                 {observeQuestion}
             </p>
-            <p className="text-lg lg:text-xl font-semibold mb-2">
+            <p className="text-lg lg:text-xl font-semibold mb-2 text-orange-500">
                 提示：我觀察/看到/聽到你.....
             </p>
             <textarea

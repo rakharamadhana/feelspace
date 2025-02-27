@@ -23,8 +23,8 @@ const DemandInterface = ({ character, onBackClick, onNextClick, initialValue }) 
             <p className="text-lg lg:text-xl font-semibold mb-4">
                 {demandQuestion}
             </p>
-            <p className="text-lg lg:text-xl font-semibold mb-4">
-                提示：可不可以...滿足各自需求的具體做法
+            <p className="text-lg lg:text-xl font-semibold mb-4 text-orange-500">
+                提示：我需要...說出感受後面的需求
             </p>
             <textarea
                 className="w-full h-36 p-3 border rounded-2xl focus:outline-none focus:ring-2 focus:ring-yellow-500"
