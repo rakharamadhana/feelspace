@@ -175,7 +175,7 @@ apiRouter.post('/login', (req, res) => {
     const query = `
         SELECT users.*, roles.role_name
         FROM users
-        JOIN roles ON users.role_id = roles.id
+                 JOIN roles ON users.role_id = roles.id
         WHERE email = ?
     `;
 
@@ -204,7 +204,13 @@ apiRouter.post('/login', (req, res) => {
                             console.error('Error updating last login info:', updateErr);
                             return res.status(500).send('Error updating login information');
                         }
-                        res.json({ token, role: user.role_name, name: user.name, email: user.email });
+                        res.json({
+                            token,
+                            role: user.role_name,
+                            name: user.name,
+                            email: user.email,
+                            whiteboard_link: user.whiteboard_link   // 👈 add this
+                        });
                     });
                 });
             } else {

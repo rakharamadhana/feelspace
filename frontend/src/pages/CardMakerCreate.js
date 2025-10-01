@@ -83,36 +83,34 @@ const CardMakerCreate = () => {
     const handleChange = (e) => {
         const inputText = e.target.value;
         let chineseCharCount = 0;
-        let isEnglish = false;
+        let englishWordCount = 0;
 
+        // Count Chinese characters and words separately
         for (let i = 0; i < inputText.length; i++) {
             if (isChinese(inputText[i])) {
                 chineseCharCount++;
-            } else if (/[a-zA-Z]/.test(inputText[i])) {
-                isEnglish = true;
             }
         }
 
-        if (chineseCharCount > 0 && isEnglish) {
-            setError('You cannot mix Chinese characters with English words.');
-        } else if (chineseCharCount > 0) {
-            if (chineseCharCount <= 200) {
-                setText(inputText);
-                setError('');
-            } else {
-                setError('您只能輸入最多200個漢字');
-            }
-        } else if (isEnglish) {
-            const wordCount = inputText.split(/\s+/).filter(word => word.length > 0).length;
-            if (wordCount <= 10) {
-                setText(inputText);
-                setError('');
-            } else {
-                setError('You can only enter up to 10 words.');
-            }
-        } else {
-            setText(inputText);
+        englishWordCount = inputText
+            .split(/\s+/)
+            .filter(word => /^[a-zA-Z]+$/.test(word)) // only pure English words
+            .length;
+
+        // Apply rules
+        if (chineseCharCount > 200) {
+            setError('您只能輸入最多200個漢字');
+            return;
         }
+
+        if (englishWordCount > 10) {
+            setError('You can only enter up to 10 English words.');
+            return;
+        }
+
+        // ✅ Both conditions satisfied
+        setText(inputText);
+        setError('');
     };
 
     const handleImageUpload = (e) => {
@@ -221,179 +219,115 @@ const CardMakerCreate = () => {
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
 
-        canvas.width = 600; // Match the card's width
-        canvas.height = 908; // Match the card's height
+        canvas.width = 1000;
+        canvas.height = 1553;
 
-        // Background
-        ctx.fillStyle = "#fff4e3"; // Background color of the card
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        // Load template background first
+        const template = new Image();
+        template.src = process.env.PUBLIC_URL + "/assets/card-template.png";
 
-        // Border
-        ctx.strokeStyle = "#6c757d"; // Border color
-        ctx.lineWidth = 16; // Border width (match the CSS border-8)
-        ctx.strokeRect(8, 8, canvas.width - 16, canvas.height - 16); // Adjusting for the border
+        template.onload = () => {
+            ctx.drawImage(template, 0, 0, canvas.width, canvas.height);
 
-        // Title Background with Rounded Corners
-        const cornerRadius = 25; // Adjust this value for more or less rounding
-        const rectX = canvas.width / 2 - 150;
-        const rectY = 25;
-        const rectWidth = 300;
-        const rectHeight = 50;
+            // === IMAGE (no border, just rounded corners) ===
+            const imageCornerRadius = 20;
+            const imageWidth = 800;
+            const imageHeight = 601;
+            const imageX = (canvas.width - imageWidth) / 2;
+            const imageY = 280; // ⬅️ moved further down from header
 
-        ctx.beginPath();
-        ctx.moveTo(rectX + cornerRadius, rectY);
-        ctx.lineTo(rectX + rectWidth - cornerRadius, rectY);
-        ctx.arcTo(rectX + rectWidth, rectY, rectX + rectWidth, rectY + cornerRadius, cornerRadius);
-        ctx.lineTo(rectX + rectWidth, rectY + rectHeight - cornerRadius);
-        ctx.arcTo(rectX + rectWidth, rectY + rectHeight, rectX + rectWidth - cornerRadius, rectY + rectHeight, cornerRadius);
-        ctx.lineTo(rectX + cornerRadius, rectY + rectHeight);
-        ctx.arcTo(rectX, rectY + rectHeight, rectX, rectY + rectHeight - cornerRadius, cornerRadius);
-        ctx.lineTo(rectX, rectY + cornerRadius);
-        ctx.arcTo(rectX, rectY, rectX + cornerRadius, rectY, cornerRadius);
-        ctx.closePath();
-
-        ctx.fillStyle = "#6c757d"; // Gray background for the title
-        ctx.fill();
-
-        // Title Text
-        ctx.font = "30px Arial"; // Match the font and size
-        ctx.fillStyle = "#fff"; // White text color
-        ctx.textAlign = "center";
-        ctx.fillText('事件卡', canvas.width / 2, rectY + rectHeight / 1.5); // Adjust the position
-
-        // Image Box with Rounded Corners
-        const imageCornerRadius = 15; // Adjust this value for more or less rounding
-        const imageX = 50;
-        const imageY = 90;
-        const imageWidth = canvas.width - 100; // Define the box width for the image
-        const imageHeight = 300; // Define the box height for the image
-
-        // Clip the image to the rounded rectangle
-        ctx.beginPath();
-        ctx.moveTo(imageX + imageCornerRadius, imageY);
-        ctx.lineTo(imageX + imageWidth - imageCornerRadius, imageY);
-        ctx.arcTo(imageX + imageWidth, imageY, imageX + imageWidth, imageY + imageCornerRadius, imageCornerRadius);
-        ctx.lineTo(imageX + imageWidth, imageY + imageHeight - imageCornerRadius);
-        ctx.arcTo(imageX + imageWidth, imageY + imageHeight, imageX + imageWidth - imageCornerRadius, imageY + imageHeight, imageCornerRadius);
-        ctx.lineTo(imageX + imageCornerRadius, imageY + imageHeight);
-        ctx.arcTo(imageX, imageY + imageHeight, imageX, imageY + imageHeight - imageCornerRadius, imageCornerRadius);
-        ctx.lineTo(imageX, imageY + imageCornerRadius);
-        ctx.arcTo(imageX, imageY, imageX + imageCornerRadius, imageY, imageCornerRadius);
-        ctx.closePath();
-
-        ctx.fillStyle = "#fff"; // White background for the image box
-        ctx.fill();
-
-        ctx.save();
-        ctx.clip(); // Clip to the path created above
-
-        // Draw the uploaded image inside the clipped area
-        const img = new Image();
-        img.crossOrigin = "anonymous"; // Add this line to ensure cross-origin image loading
-        img.src = imageSrc;
-
-        img.onload = () => {
-            const imageAspectRatio = img.width / img.height;
-            const frameAspectRatio = imageWidth / imageHeight;
-            let sourceX = 0, sourceY = 0, sourceWidth = img.width, sourceHeight = img.height;
-
-            // If the image aspect ratio is greater than the frame, crop horizontally
-            if (imageAspectRatio > frameAspectRatio) {
-                // Image is wider than the frame, crop the sides
-                sourceWidth = img.height * frameAspectRatio;
-                sourceX = (img.width - sourceWidth) / 2; // Center the crop horizontally
-            } else {
-                // Image is taller than the frame, crop the top and bottom
-                sourceHeight = img.width / frameAspectRatio;
-                sourceY = (img.height - sourceHeight) / 2; // Center the crop vertically
-            }
-
-            // Draw the image, filling the entire frame and cropping the excess
-            ctx.drawImage(
-                img,
-                sourceX, sourceY, // Start cropping from (sourceX, sourceY)
-                sourceWidth, sourceHeight, // Crop dimensions
-                imageX, imageY, // Destination position on the canvas
-                imageWidth, imageHeight // Destination dimensions on the canvas
-            );
-
-            ctx.restore(); // Restore to previous state to draw the border
-
-            // Draw the border around the image box
-            ctx.strokeStyle = "#6c757d"; // Border color (same as the title background)
-            ctx.lineWidth = 8; // Border width (match the CSS border-8)
-            ctx.stroke(); // Stroke the rounded rectangle
-
-            // Description Box with Rounded Corners
-            const descCornerRadius = 15; // Adjust this value for more or less rounding
-            const descX = 50;
-            const descY = 425;
-            const descWidth = canvas.width - 100;
-            const descHeight = 325;
-
+            ctx.save();
             ctx.beginPath();
-            ctx.moveTo(descX + descCornerRadius, descY);
-            ctx.lineTo(descX + descWidth - descCornerRadius, descY);
-            ctx.arcTo(descX + descWidth, descY, descX + descWidth, descY + descCornerRadius, descCornerRadius);
-            ctx.lineTo(descX + descWidth, descY + descHeight - descCornerRadius);
-            ctx.arcTo(descX + descWidth, descY + descHeight, descX + descWidth - descCornerRadius, descY + descHeight, descCornerRadius);
-            ctx.lineTo(descX + descCornerRadius, descY + descHeight);
-            ctx.arcTo(descX, descY + descHeight, descX, descY + descHeight - descCornerRadius, descCornerRadius);
-            ctx.lineTo(descX, descY + descCornerRadius);
-            ctx.arcTo(descX, descY, descX + descCornerRadius, descY, descCornerRadius);
+            ctx.moveTo(imageX + imageCornerRadius, imageY);
+            ctx.lineTo(imageX + imageWidth - imageCornerRadius, imageY);
+            ctx.arcTo(imageX + imageWidth, imageY, imageX + imageWidth, imageY + imageCornerRadius, imageCornerRadius);
+            ctx.lineTo(imageX + imageWidth, imageY + imageHeight - imageCornerRadius);
+            ctx.arcTo(imageX + imageWidth, imageY + imageHeight, imageX + imageWidth - imageCornerRadius, imageY + imageHeight, imageCornerRadius);
+            ctx.lineTo(imageX + imageCornerRadius, imageY + imageHeight);
+            ctx.arcTo(imageX, imageY + imageHeight, imageX, imageY + imageHeight - imageCornerRadius, imageCornerRadius);
+            ctx.lineTo(imageX, imageY + imageCornerRadius);
+            ctx.arcTo(imageX, imageY, imageX + imageCornerRadius, imageY, imageCornerRadius);
             ctx.closePath();
+            ctx.clip();
 
-            ctx.fillStyle = "#fff"; // White background for the description
-            ctx.fill();
+            const img = new Image();
+            img.crossOrigin = "anonymous";
+            img.src = imageSrc;
 
-            // Draw the border around the description box with rounded corners
-            ctx.strokeStyle = "#6c757d"; // Border color (same as the title background)
-            ctx.lineWidth = 8; // Border width (match the CSS border-8)
-            ctx.stroke(); // Stroke the rounded rectangle
+            img.onload = () => {
+                const imageAspectRatio = img.width / img.height;
+                const frameAspectRatio = imageWidth / imageHeight;
+                let sourceX = 0, sourceY = 0, sourceWidth = img.width, sourceHeight = img.height;
 
-            // Description Text
-            ctx.font = "20px Arial"; // Match the font and size
-            ctx.fillStyle = "#000"; // Black text color
-            ctx.textAlign = "left"; // Start from the left
-            ctx.textBaseline = "top"; // Align text to the top
-
-            // Function to wrap text
-            const wrapText = (context, text, x, y, maxWidth, lineHeight) => {
-                let words = text.split(""); // Chinese characters don't have spaces, so split per character
-                let line = "";
-                let yOffset = 0;
-
-                for (let i = 0; i < words.length; i++) {
-                    let testLine = line + words[i];
-                    let testWidth = context.measureText(testLine).width;
-
-                    if (testWidth > maxWidth && i > 0) {
-                        context.fillText(line, x, y + yOffset);
-                        line = words[i]; // Start new line
-                        yOffset += lineHeight; // Move down
-                    } else {
-                        line = testLine;
-                    }
+                if (imageAspectRatio > frameAspectRatio) {
+                    sourceWidth = img.height * frameAspectRatio;
+                    sourceX = (img.width - sourceWidth) / 2;
+                } else {
+                    sourceHeight = img.width / frameAspectRatio;
+                    sourceY = (img.height - sourceHeight) / 2;
                 }
-                context.fillText(line, x, y + yOffset); // Draw remaining text
+
+                ctx.drawImage(
+                    img,
+                    sourceX, sourceY,
+                    sourceWidth, sourceHeight,
+                    imageX, imageY,
+                    imageWidth, imageHeight
+                );
+                ctx.restore();
+
+                // === DESCRIPTION TEXT (no box, directly on card) ===
+                ctx.font = "38px Arial"; // ⬅️ larger text
+                ctx.fillStyle = "#000";
+                ctx.textAlign = "left";
+                ctx.textBaseline = "top";
+
+                const descX = 100; // margin
+                const descY = imageY + imageHeight + 50; // ⬅️ extra gap below image
+                const descWidth = canvas.width - 200;
+
+                const wrapText = (context, text, x, y, maxWidth, lineHeight) => {
+                    const paragraphs = text.split(/\n/);
+                    let yOffset = 0;
+
+                    paragraphs.forEach((para) => {
+                        let words = para.split(""); // Chinese: per char
+                        let line = "";
+
+                        for (let i = 0; i < words.length; i++) {
+                            let testLine = line + words[i];
+                            let testWidth = context.measureText(testLine).width;
+
+                            if (testWidth > maxWidth && i > 0) {
+                                context.fillText(line, x, y + yOffset);
+                                line = words[i];
+                                yOffset += lineHeight;
+                            } else {
+                                line = testLine;
+                            }
+                        }
+                        context.fillText(line, x, y + yOffset);
+                        yOffset += lineHeight * 1.5;
+                    });
+                };
+
+                wrapText(ctx, text, descX, descY, descWidth, 50);
+
+                // === SAVE FILE ===
+                canvas.toBlob((blob) => {
+                    const downloadLink = document.createElement("a");
+                    downloadLink.download = `${title}.png`;
+                    downloadLink.href = URL.createObjectURL(blob);
+                    downloadLink.click();
+                }, "image/png");
             };
 
-            // Apply wrapped text inside the description box
-            wrapText(ctx, text, descX + 10, descY + 10, descWidth - 20, 30);
-
-            // Download the card as an image locally
-            canvas.toBlob((blob) => {
-                const downloadLink = document.createElement('a');
-                downloadLink.download = `${title}.png`;
-                downloadLink.href = URL.createObjectURL(blob);
-                downloadLink.click();
-            }, 'image/png');
+            img.onerror = () => console.error("Image loading failed.");
         };
 
-        img.onerror = () => {
-            console.error('Image loading failed. Ensure the server has proper CORS headers.');
-        };
+        template.onerror = () => console.error("Template image loading failed.");
     };
+
 
 
     return (
@@ -411,28 +345,21 @@ const CardMakerCreate = () => {
                     </button>
 
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 w-full max-w-6xl mx-auto">
-                        {/* Card Creation Form */}
-                        <div className="flex flex-col mb-3 w-full h-auto rounded-2xl overflow-hidden shadow-lg border-gray-500 border-8 bg-white px-4 py-4">
-                            {/* Title Input */}
-                            <input
-                                type="text"
-                                className="text-center mt-5 text-xl md:text-2xl shadow-lg rounded-full px-1 py-2 bg-gray-500 text-white focus:outline-none"
-                                value={title} // The title state is set to "感受卡"
-                                readOnly // Makes the input field uneditable by the user
+                        {/* Card Creation Form with template overlay */}
+                        <div className="relative w-[500px] h-[776px] mx-auto">
+                            {/* Template background */}
+                            <img
+                                src={`${process.env.PUBLIC_URL}/assets/card-template.png`}
+                                alt="Card template"
+                                className="absolute top-0 left-0 w-full h-full pointer-events-none select-none"
                             />
 
-
-                            {/* Image Upload */}
-                            <div
-                                className={`relative w-full h-72 mt-8 border-gray-500 border-8 bg-white rounded-2xl flex items-center justify-center overflow-hidden ${isDragging ? 'bg-gray-200' : 'bg-white'}`}
-                                onDragOver={handleDragOver}
-                                onDragLeave={handleDragLeave}
-                                onDrop={handleDrop}
-                            >
-                                {imageFile ? (
-                                    <img src={imagePreview} alt="Uploaded" className="w-full h-full object-cover"/>
+                            {/* Image upload slot */}
+                            <div className="absolute left-1/2 -translate-x-1/2 top-[130px] w-[400px] h-[300px] rounded-xl border-2 border-dashed border-gray-400 flex items-center justify-center bg-white/70 overflow-hidden">
+                                {imagePreview ? (
+                                    <img src={imagePreview} alt="Uploaded" className="w-full h-full object-cover" />
                                 ) : (
-                                    <label className="flex flex-col items-center justify-center cursor-pointer">
+                                    <label className="flex flex-col items-center justify-center cursor-pointer text-gray-600">
                                         <span>上傳圖片</span>
                                         <input
                                             type="file"
@@ -440,24 +367,22 @@ const CardMakerCreate = () => {
                                             className="hidden"
                                             onChange={handleImageUpload}
                                         />
-                                        <p className="text-sm text-gray-500 mt-2">點擊此處或拖放圖片到此區域</p>
                                     </label>
                                 )}
                             </div>
 
-                            {/* Textarea */}
+                            {/* Description textarea */}
                             <textarea
-                                className="w-full h-32 md:h-40 mt-8 border-gray-500 border-8 bg-white rounded-2xl flex items-start justify-start focus:outline-none text-lg md:text-xl text-start"
-                                placeholder="輸入小組發想衝突故事"
-                                rows="4"
+                                className="absolute left-[50px] right-[50px] bottom-[100px] h-[200px] bg-transparent resize-none outline-none text-lg text-black"
+                                placeholder="輸入發想衝突故事"
                                 value={text}
                                 onChange={handleChange}
-                            ></textarea>
+                            />
 
                             {/* Save Button */}
                             <button
                                 onClick={handleSave}
-                                className="bg-orange-500 text-white font-bold py-2 px-6 rounded-full shadow-lg hover:bg-orange-600 hover:scale-110 active:scale-95 transition duration-300 ease-in-out text-md md:text-lg lg:text-xl mb-3 mt-4"
+                                className="absolute bottom-[20px] left-1/2 -translate-x-1/2 bg-orange-500 text-white font-bold py-2 px-6 rounded-full shadow-lg hover:bg-orange-600 hover:scale-110 active:scale-95 transition duration-300 ease-in-out text-md"
                             >
                                 保存卡片/下載
                             </button>

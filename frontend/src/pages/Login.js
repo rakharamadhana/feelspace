@@ -38,7 +38,8 @@ const Login = () => {
                 localStorage.setItem('token', response.data.token);
                 localStorage.setItem('role', response.data.role);
                 localStorage.setItem('name', response.data.name);
-                localStorage.setItem('email', response.data.email);
+                localStorage.setItem('email', response.data.email);;
+                localStorage.setItem('user', JSON.stringify(response.data));
 
                 // Store both the message and type in one line
                 localStorage.setItem('notification', JSON.stringify({ message: 'Login successful! Welcome back ' + response.data.name + '!', type: 'success' }));

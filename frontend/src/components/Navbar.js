@@ -29,13 +29,6 @@ const Navbar = () => {
             color: 'bg-orange-500 text-white hover:bg-orange-700',
             target: '_self' // Same tab
         },
-        {
-            name: '問卷表單',
-            href: 'https://forms.gle/my5JqRtwJirkHTTN9',
-            current: false, // Not linked to the current location
-            color: 'bg-blue-500 text-white hover:bg-blue-700', // Unique color for this button
-            target: '_blank' // Opens in a new tab
-        }
     ];
 
     const handleLogout = () => {
