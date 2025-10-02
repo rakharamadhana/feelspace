@@ -7,9 +7,12 @@ import FadeIn from "../components/FadeIn";
 export default function StudentWhiteboard() {
     const location = useLocation();
     const navigate = useNavigate();
-
-    const whiteboardLink = location.state?.link || "https://example.com";
     const role = localStorage.getItem("role");
+
+    // ✅ If no link passed, fall back to a static HTML embed
+    const whiteboardLink =
+        location.state?.link ||
+        "https://jyliu2001-wixsite-com.filesusr.com/html/6f1c59_c73fe61c77bbdc41c9bc942741a49d28.html";
 
     return (
         <div
@@ -35,11 +38,12 @@ export default function StudentWhiteboard() {
                     </button>
                 </FadeIn>
 
-                {/* Whiteboard container (always visible, not wrapped in FadeIn) */}
+                {/* Whiteboard container */}
                 <div className="w-[90%] h-[90vh] bg-white rounded-xl shadow-lg overflow-hidden">
                     <iframe
                         src={whiteboardLink}
                         title="Student Whiteboard"
+                        sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-modals allow-pointer-lock"
                         allowFullScreen
                         className="w-full h-full border-0"
                     />
