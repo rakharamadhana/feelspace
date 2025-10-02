@@ -12,12 +12,15 @@ export default function StudentWhiteboard() {
     const role = localStorage.getItem("role");
 
     return (
-        <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#fff4e3" }}>
-            <FadeIn>
-                {/* Navbar/Header */}
-                <Navbar role={role} />
+        <div
+            className="min-h-screen flex flex-col"
+            style={{ backgroundColor: "#fff4e3" }}
+        >
+            {/* Navbar/Header */}
+            <Navbar role={role} />
 
-                <div className="flex-grow flex flex-col items-center justify-center text-black px-4">
+            <div className="flex-grow flex flex-col items-center justify-center text-black px-4">
+                <FadeIn>
                     {/* Title */}
                     <h1 className="text-3xl md:text-5xl lg:text-7xl text-center font-bold mb-3">
                         衝突事件分析
@@ -30,19 +33,18 @@ export default function StudentWhiteboard() {
                     >
                         返回
                     </button>
+                </FadeIn>
 
-                    {/* Whiteboard container */}
-                    <div className="w-[90%] h-[90vh] bg-white rounded-xl shadow-lg overflow-hidden">
-                        <iframe
-                            src={whiteboardLink}
-                            title="Student Whiteboard"
-                            allowFullScreen
-                            className="w-full h-full border-0"
-                        />
-                    </div>
+                {/* Whiteboard container (always visible, not wrapped in FadeIn) */}
+                <div className="w-[90%] h-[90vh] bg-white rounded-xl shadow-lg overflow-hidden">
+                    <iframe
+                        src={whiteboardLink}
+                        title="Student Whiteboard"
+                        allowFullScreen
+                        className="w-full h-full border-0"
+                    />
                 </div>
-
-            </FadeIn>
+            </div>
         </div>
     );
 }
