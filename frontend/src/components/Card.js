@@ -1,10 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-const Card = ({ imageUrl, text, bgColor, borderColor, textColor, link, simple, target = '_self' }) => {
+const Card = ({ imageUrl, text, bgColor, borderColor, textColor, link, simple, target = '_self', state }) => {
     const isExternalLink = target === '_blank';
 
-    // Add responsive classes dynamically
+    // Responsive classes
     const cardClasses = `max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl 
                          rounded-3xl overflow-hidden shadow-lg 
                          hover:bg-opacity-80 hover:scale-105 active:scale-95 
@@ -32,21 +32,13 @@ const Card = ({ imageUrl, text, bgColor, borderColor, textColor, link, simple, t
             >
                 <div className={contentClasses}>
                     {simple ? (
-                        <div className={`w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 lg:w-48 lg:h-48 flex items-center justify-center`}>
-                            <div className={textClasses}>
-                                {text}
-                            </div>
+                        <div className="w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 lg:w-48 lg:h-48 flex items-center justify-center">
+                            <div className={textClasses}>{text}</div>
                         </div>
                     ) : (
                         <>
-                            <img
-                                className={imageClasses}
-                                src={imageUrl}
-                                alt="Card Illustration"
-                            />
-                            <div className={`mt-2 sm:mt-3 md:mt-4 lg:mt-6 font-bold ${textClasses}`}>
-                                {text}
-                            </div>
+                            <img className={imageClasses} src={imageUrl} alt="Card Illustration" />
+                            <div className={`mt-2 sm:mt-3 md:mt-4 lg:mt-6 font-bold ${textClasses}`}>{text}</div>
                         </>
                     )}
                 </div>
@@ -54,25 +46,18 @@ const Card = ({ imageUrl, text, bgColor, borderColor, textColor, link, simple, t
         ) : (
             <Link
                 to={link}
+                state={state}  // ✅ pass state to router
                 className={cardClasses}
             >
                 <div className={contentClasses}>
                     {simple ? (
-                        <div className={`w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 lg:w-48 lg:h-48 flex items-center justify-center`}>
-                            <div className={textClasses}>
-                                {text}
-                            </div>
+                        <div className="w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 lg:w-48 lg:h-48 flex items-center justify-center">
+                            <div className={textClasses}>{text}</div>
                         </div>
                     ) : (
                         <>
-                            <img
-                                className={imageClasses}
-                                src={imageUrl}
-                                alt="Card Illustration"
-                            />
-                            <div className={`mt-2 sm:mt-3 md:mt-4 lg:mt-6 font-bold ${textClasses}`}>
-                                {text}
-                            </div>
+                            <img className={imageClasses} src={imageUrl} alt="Card Illustration" />
+                            <div className={`mt-2 sm:mt-3 md:mt-4 lg:mt-6 font-bold ${textClasses}`}>{text}</div>
                         </>
                     )}
                 </div>

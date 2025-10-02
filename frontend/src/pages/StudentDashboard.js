@@ -42,12 +42,8 @@ const StudentDashboard = () => {
                             text="衝突事件分析"
                             bgColor="bg-red-300"
                             textColor="text-white"
-                            link={user?.whiteboard_link}
-                            className={`${
-                                isTouched ? 'scale-95' : 'hover:scale-110'
-                            } transition transform duration-300 ease-in-out mx-2 md:mx-4`}
-                            onTouchStart={() => setIsTouched(true)}
-                            onTouchEnd={() => setIsTouched(false)}
+                            link="/student-whiteboard"
+                            state={{ link: user?.whiteboard_link }}   // ✅ pass state
                         />
 
                         <Card

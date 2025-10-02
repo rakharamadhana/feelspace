@@ -20,6 +20,7 @@ import CasesManagement from './components/CasesManagement'; // Import the CasesM
 import CaseDetailsResponse from './pages/CaseDetailsResponse'; // Import the CaseDetailsResponse component
 import CasesResponse from './pages/CasesResponse'; // Import the AllResponses component
 import Draw from "./pages/Draw";
+import StudentWhiteboard from "./pages/StudentWhiteboard";
 
 
 function App() {
@@ -45,6 +46,7 @@ function App() {
 
                 {/*Frontend*/}
                 <Route path="/student-dashboard" element={<ProtectedRoute element={<StudentDashboard />} />} />
+                <Route path="/student-whiteboard" element={<ProtectedRoute element={<StudentWhiteboard />} />} />
                 <Route path="/case-study" element={<ProtectedRoute element={<CaseStudy />} />} />
                 <Route path="/case-study/detail/:id" element={<ProtectedRoute element={<CaseStudyDetail />} />} />
                 <Route path="/card-maker" element={<ProtectedRoute element={<CardMaker />} />} />
